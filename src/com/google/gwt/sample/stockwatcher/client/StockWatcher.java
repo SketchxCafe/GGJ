@@ -1,5 +1,7 @@
 package com.google.gwt.sample.stockwatcher.client;
 
+import org.vaadin.gwtgraphics.client.DrawingArea;
+
 import com.google.gwt.sample.stockwatcher.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -44,6 +46,12 @@ public class StockWatcher implements EntryPoint {
 		nameField.setText("GWT User");
 		final Label errorLabel = new Label();
 
+		// Drawing Canvas
+		DrawingArea canvas = new DrawingArea(400, 400);
+		RootPanel.get().add(canvas);
+		
+		
+		
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
 
@@ -75,10 +83,6 @@ public class StockWatcher implements EntryPoint {
 		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		dialogVPanel.add(closeButton);
 		dialogBox.setWidget(dialogVPanel);
-
-		// Drawing Canvas
-//		DrawingArea canvas = new DrawingArea(400, 400);
-//		RootPanel.get().add(canvas);
 		
 		// Add a handler to close the DialogBox
 		closeButton.addClickHandler(new ClickHandler() {
