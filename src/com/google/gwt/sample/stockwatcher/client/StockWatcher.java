@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -50,6 +51,16 @@ public class StockWatcher implements EntryPoint {
 		DrawingArea canvas = new DrawingArea(400, 400);
 		RootPanel.get().add(canvas);
 		
+		/*
+		final Circle circle = new Circle(0, 0, 10);
+		canvas.add(circle);
+		canvas.addMouseMoveHandler(new MouseMoveHandler() {
+			public void onMouseMove(MouseMoveEvent event) {
+				circle.setX(event.getX());
+				circle.setY(event.getY());
+			}
+		});
+		*/
 		
 		
 		// We can add style names to widgets
