@@ -2,19 +2,28 @@ package com.google.gwt.sample.stockwatcher.client;
 
 import org.vaadin.gwtgraphics.client.DrawingArea;
 
-import com.google.gwt.sample.stockwatcher.shared.FieldVerifier;
+import com.google.gwt.sample.stockwatcher.client.ImageService;
+import com.google.gwt.sample.stockwatcher.client.ImageServiceAsync;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.sample.stockwatcher.shared.FieldVerifier;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -38,6 +47,10 @@ public class StockWatcher implements EntryPoint {
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 
+	FormPanel form = new FormPanel();
+
+	private final ImageServiceAsync imageService = GWT.create(ImageService.class);
+	
 	/**
 	 * This is the entry point method.
 	 */
@@ -61,6 +74,76 @@ public class StockWatcher implements EntryPoint {
 			}
 		});
 		*/
+		
+		
+		VerticalPanel UploadPanel = new VerticalPanel();
+		UploadPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		//UI_MenuPanel.add(UploadPanel);
+		UploadPanel.setWidth("315px");
+
+		Label lblUploadACute = new Label("Upload a cute Tree Picture!");
+		lblUploadACute.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		UploadPanel.add(lblUploadACute);
+
+		final FileUpload fileUpload = new FileUpload();
+		fileUpload.setName("fileUpload");
+		UploadPanel.add(fileUpload);
+		form = new FormPanel();
+		form.setWidget(UploadPanel);
+		//form.setEncoding(FormPanel.ENCODING_MULTIPART);
+		//form.setMethod(FormPanel.METHOD_POST);
+		startNewBlobstoreSession();
+		fileUpload.addChangeHandler(new ChangeHandler(){
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				// TODO Auto-generated method stub
+				System.out.println(fileUpload.getFilename());
+				com.google.gwt.user.client.Window.alert(("Yay! You chose a file! Magic-magic-magic!!!!\n"+
+						fileUpload.getFilename()));
+				//startNewBlobstoreSession();
+				form.submit();
+				
+				
+			}});
+		form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+			public void onSubmitComplete(SubmitCompleteEvent event){
+				form.reset();
+				startNewBlobstoreSession();
+				System.out.println("The event results are " + event.getResults());
+				com.google.gwt.user.client.Window.alert("The event results are " + event.getResults());
+				String key = event.getResults();
+				//key = "ahFjcHNjMzEwdGVhbXRyZWVtaXIPCxIJSW1hZ2VCbG9iGGMM";	//Hardcoded test
+				imageService.get(key, new AsyncCallback<ImageBlob>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						System.out.println("Naaaaayy!!! =(");
+						com.google.gwt.user.client.Window.alert("Naaaaaayyy!! =(");
+					}
+
+					@Override
+					public void onSuccess(ImageBlob result) {
+						System.out.println(result==null);
+						System.out.println("new " + result.servingUrl + ", yay!!!");
+						com.google.gwt.user.client.Window.alert("new " + result.servingUrl + ", yay!!!");
+						//pictureListTab.addImageFirst(result.servingUrl);
+						//UIPictureSingle uip = new UIPictureSingle(result.servingUrl);
+						form.reset();
+						//uip.imageblob = result;
+						//uip.image.setUrl(result.getServingUrl());
+					}
+					
+				});
+			}
+		});
+		
+		//form.add(UploadPanel);
+		RootPanel.get().add(form);
+		
+		
+		
 		
 		
 		// We can add style names to widgets
@@ -167,5 +250,34 @@ public class StockWatcher implements EntryPoint {
 		MyHandler handler = new MyHandler();
 		sendButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
+	}
+	
+	
+	
+	@UiHandler("uploadButton")
+	void onSubmit(ClickEvent e) {
+		form.submit();
+	}
+
+	private void startNewBlobstoreSession() {
+		imageService.getBlobstoreUploadUrl(new AsyncCallback<String>() {
+
+			@Override
+			public void onSuccess(String result) {
+				form.setAction(result);
+				form.setEncoding(FormPanel.ENCODING_MULTIPART);
+				form.setMethod(FormPanel.METHOD_POST);
+				System.out.println(result + " was successful.");
+			//	uploadButton.setText("Upload");
+			//	uploadButton.setEnabled(true);
+
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				System.out.println("Starting Blob session failed =(");
+			}
+		});
 	}
 }
