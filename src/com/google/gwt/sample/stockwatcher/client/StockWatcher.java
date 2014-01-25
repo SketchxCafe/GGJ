@@ -1,6 +1,7 @@
 package com.google.gwt.sample.stockwatcher.client;
 
 import org.vaadin.gwtgraphics.client.DrawingArea;
+import org.vaadin.gwtgraphics.client.shape.Circle;
 
 import com.google.gwt.sample.stockwatcher.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
@@ -11,6 +12,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -48,20 +50,21 @@ public class StockWatcher implements EntryPoint {
 		final Label errorLabel = new Label();
 
 		// Drawing Canvas
-		DrawingArea canvas = new DrawingArea(400, 400);
+		final DrawingArea canvas = new DrawingArea(400, 400);
 		RootPanel.get().add(canvas);
 		
-		/*
+		// set size, colour
+		
 		final Circle circle = new Circle(0, 0, 10);
 		canvas.add(circle);
 		canvas.addMouseMoveHandler(new MouseMoveHandler() {
 			public void onMouseMove(MouseMoveEvent event) {
+				circle.setFillColor("black");
 				circle.setX(event.getX());
 				circle.setY(event.getY());
+				canvas.add(new Circle(event.getX(), event.getY(), 10));
 			}
 		});
-		*/
-		
 		
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
