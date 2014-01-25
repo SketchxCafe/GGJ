@@ -1,10 +1,12 @@
 package com.google.gwt.sample.stockwatcher.client;
 
 import org.vaadin.gwtgraphics.client.DrawingArea;
+import org.vaadin.gwtgraphics.client.Image;
 
 import com.google.gwt.sample.stockwatcher.client.ImageService;
 import com.google.gwt.sample.stockwatcher.client.ImageServiceAsync;
-
+import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -14,6 +16,16 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.sample.stockwatcher.shared.FieldVerifier;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -48,9 +60,10 @@ public class StockWatcher implements EntryPoint {
 			.create(GreetingService.class);
 
 	FormPanel form = new FormPanel();
-
+	final Canvas myCanvas = Canvas.createIfSupported();
+	DrawListener myMouseHandler = new DrawListener();
 	private final ImageServiceAsync imageService = GWT.create(ImageService.class);
-	
+
 	/**
 	 * This is the entry point method.
 	 */
@@ -73,9 +86,30 @@ public class StockWatcher implements EntryPoint {
 				circle.setY(event.getY());
 			}
 		});
-		*/
+		 */
+
+
+		//Image img = new Image (0,0,canvas.getWidth(),canvas.getHeight());
+
+		myCanvas.setCoordinateSpaceHeight(800);
+		myCanvas.setCoordinateSpaceWidth(800);
+		myCanvas.setPixelSize(800, 800);
+		Context2d context1 = myCanvas.getContext2d();
 		
+		context1.arc(0, 100, 30, 0, 80);
+		context1.fill();
+		context1.closePath();
+
+		RootPanel.get().add(myCanvas);
+
+		myCanvas.addMouseMoveHandler(myMouseHandler);
+		myCanvas.addMouseDownHandler(myMouseHandler);
+		myCanvas.addMouseUpHandler(myMouseHandler);
+		myCanvas.addMouseOverHandler(myMouseHandler);
+		myCanvas.addMouseOutHandler(myMouseHandler);
 		
+		//canvas.getVectorObject(0).
+
 		VerticalPanel UploadPanel = new VerticalPanel();
 		UploadPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		//UI_MenuPanel.add(UploadPanel);
@@ -103,8 +137,8 @@ public class StockWatcher implements EntryPoint {
 						fileUpload.getFilename()));
 				//startNewBlobstoreSession();
 				form.submit();
-				
-				
+
+
 			}});
 		form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 			public void onSubmitComplete(SubmitCompleteEvent event){
@@ -134,18 +168,18 @@ public class StockWatcher implements EntryPoint {
 						//uip.imageblob = result;
 						//uip.image.setUrl(result.getServingUrl());
 					}
-					
+
 				});
 			}
 		});
-		
+
 		//form.add(UploadPanel);
 		RootPanel.get().add(form);
-		
-		
-		
-		
-		
+
+
+
+
+
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
 
@@ -177,7 +211,7 @@ public class StockWatcher implements EntryPoint {
 		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		dialogVPanel.add(closeButton);
 		dialogBox.setWidget(dialogVPanel);
-		
+
 		// Add a handler to close the DialogBox
 		closeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
@@ -223,26 +257,26 @@ public class StockWatcher implements EntryPoint {
 				serverResponseLabel.setText("");
 				greetingService.greetServer(textToServer,
 						new AsyncCallback<String>() {
-							public void onFailure(Throwable caught) {
-								// Show the RPC error message to the user
-								dialogBox
-										.setText("Remote Procedure Call - Failure");
-								serverResponseLabel
-										.addStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(SERVER_ERROR);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
+					public void onFailure(Throwable caught) {
+						// Show the RPC error message to the user
+						dialogBox
+						.setText("Remote Procedure Call - Failure");
+						serverResponseLabel
+						.addStyleName("serverResponseLabelError");
+						serverResponseLabel.setHTML(SERVER_ERROR);
+						dialogBox.center();
+						closeButton.setFocus(true);
+					}
 
-							public void onSuccess(String result) {
-								dialogBox.setText("Remote Procedure Call");
-								serverResponseLabel
-										.removeStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(result);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
-						});
+					public void onSuccess(String result) {
+						dialogBox.setText("Remote Procedure Call");
+						serverResponseLabel
+						.removeStyleName("serverResponseLabelError");
+						serverResponseLabel.setHTML(result);
+						dialogBox.center();
+						closeButton.setFocus(true);
+					}
+				});
 			}
 		}
 
@@ -251,9 +285,9 @@ public class StockWatcher implements EntryPoint {
 		sendButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
 	}
-	
-	
-	
+
+
+
 	@UiHandler("uploadButton")
 	void onSubmit(ClickEvent e) {
 		form.submit();
@@ -268,8 +302,8 @@ public class StockWatcher implements EntryPoint {
 				form.setEncoding(FormPanel.ENCODING_MULTIPART);
 				form.setMethod(FormPanel.METHOD_POST);
 				System.out.println(result + " was successful.");
-			//	uploadButton.setText("Upload");
-			//	uploadButton.setEnabled(true);
+				//	uploadButton.setText("Upload");
+				//	uploadButton.setEnabled(true);
 
 			}
 
@@ -279,5 +313,72 @@ public class StockWatcher implements EntryPoint {
 				System.out.println("Starting Blob session failed =(");
 			}
 		});
+	}
+
+	private class DrawListener implements MouseDownHandler, MouseOverHandler, MouseOutHandler, MouseUpHandler, MouseMoveHandler
+	{
+		int x = 0, y = 0;
+		boolean mouseDown = false;
+		Context2d context1 = myCanvas.getContext2d();
+		
+		final int REFRESH_MAX = 4;
+		int count = 0;
+
+		@Override
+		public void onMouseDown(MouseDownEvent event) {
+			mouseDown = true;
+			context1.beginPath();
+			x = event.getX();
+			y = event.getY();
+		}
+
+		@Override
+		public void onMouseOver(MouseOverEvent event) {
+			context1.beginPath();
+			x = event.getX();
+			y = event.getY();
+		}
+
+		@Override
+		public void onMouseOut(MouseOutEvent event) {
+			context1.stroke();
+			context1.closePath();
+			count = 0;
+		}
+
+		@Override
+		public void onMouseUp(MouseUpEvent event) {
+			mouseDown = false;
+			context1.stroke();
+			context1.closePath();
+			count = 0;
+		}
+
+		@Override
+		public void onMouseMove(MouseMoveEvent event) {
+			if (mouseDown)
+			{
+				context1.lineTo(x, y);
+				context1.lineTo(event.getX(), event.getY());
+				//context1.arc(event.getX(), event.getY(), 5, 0, 360);
+				//context1.fill();
+				//context1.stroke();
+				//context1.closePath();
+				System.out.println(x + " "+ y);
+				x = event.getX();
+				y = event.getY();
+				
+				count++;
+				if (count >= REFRESH_MAX)
+				{
+					context1.stroke();
+					context1.closePath();
+					context1.beginPath();
+					x = event.getX();
+					y = event.getY();
+					count = 0;
+				}
+			}
+		}
 	}
 }
