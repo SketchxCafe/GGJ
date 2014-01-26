@@ -1,15 +1,5 @@
 package com.google.gwt.sample.stockwatcher.client;
 
-import java.awt.FileDialog;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-
-import org.vaadin.gwtgraphics.client.DrawingArea;
-import org.vaadin.gwtgraphics.client.Image;
-
-import com.google.gwt.sample.stockwatcher.client.ImageService;
-import com.google.gwt.sample.stockwatcher.client.ImageServiceAsync;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
@@ -43,6 +33,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -68,34 +59,24 @@ public class StockWatcher implements EntryPoint {
 	FormPanel form = new FormPanel();
 	final Canvas myCanvas = Canvas.createIfSupported();
 	DrawListener myMouseHandler = new DrawListener();
-	private final ImageServiceAsync imageService = GWT.create(ImageService.class);
+	public static final ImageServiceAsync imageService = GWT.create(ImageService.class);
 
+	//public LayoutPanel drawPanel = new LayoutPanel();
+	
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
+		myCanvas.getElement().setId("coolCanvas");
+		
+		//RootLayoutPanel.get().add(new UIDrawings());
+		
 		final Button sendButton = new Button("Send");
 		final TextBox nameField = new TextBox();
 		nameField.setText("GWT User");
 		final Label errorLabel = new Label();
 
-		// Drawing Canvas
-		DrawingArea canvas = new DrawingArea(400, 400);
-		RootPanel.get().add(canvas);
-		
-		/*
-		final Circle circle = new Circle(0, 0, 10);
-		canvas.add(circle);
-		canvas.addMouseMoveHandler(new MouseMoveHandler() {
-			public void onMouseMove(MouseMoveEvent event) {
-				circle.setX(event.getX());
-				circle.setY(event.getY());
-			}
-		});
-		 */
-
-
-		//Image img = new Image (0,0,canvas.getWidth(),canvas.getHeight());
+		//Canvas for drawing
 
 		myCanvas.setCoordinateSpaceHeight(800);
 		myCanvas.setCoordinateSpaceWidth(800);
@@ -114,7 +95,7 @@ public class StockWatcher implements EntryPoint {
 		myCanvas.addMouseOverHandler(myMouseHandler);
 		myCanvas.addMouseOutHandler(myMouseHandler);
 		
-		//canvas.getVectorObject(0).
+		
 
 		VerticalPanel UploadPanel = new VerticalPanel();
 		UploadPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -186,20 +167,6 @@ public class StockWatcher implements EntryPoint {
 
 		//form.add(UploadPanel);
 		RootPanel.get().add(form);
-
-//		final FileUpload fileBlah = new FileUpload();
-//		RootPanel.get().add(fileBlah);
-//		
-//		fileBlah.addChangeHandler( new ChangeHandler() {
-//			
-//			@Override
-//			public void onChange(ChangeEvent event) {
-//				System.out.print(fileBlah.getFilename());
-//				//TODO: Compatibility for other platforms
-//				File myFile = new File(fileBlah.getFilename().substring(0, fileBlah.getFilename().lastIndexOf('\\')));
-//				
-//			}
-//		});
 		
 
 		Button myButton = new Button("Save the image.");
@@ -208,12 +175,21 @@ public class StockWatcher implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event) {
 				String data = myCanvas.toDataUrl("image/png");
-				//data = data.replaceFirst("image/png", "image/octet-stream");
+				data = data.replaceFirst("image/png", "image/octet-stream");
 				Window.open(data, "file", null);
 			}
 		});
 		RootPanel.get().add(myButton);
 
+		
+		//final UIPictureList myPL = new UIPictureList(1);
+		
+		//Loading images from the datastore
+				
+		
+		//RootPanel.get().add(myPL.asWidget());
+		
+		
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
 
@@ -318,6 +294,12 @@ public class StockWatcher implements EntryPoint {
 		MyHandler handler = new MyHandler();
 		sendButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
+		
+		//RootLayoutPanel.get().add(new UIDrawings());
+		
+		//RootLayoutPanel.get().add(new ScrollPanel(drawPanel));
+		
+		
 	}
 
 
@@ -355,8 +337,8 @@ public class StockWatcher implements EntryPoint {
 		boolean mouseDown = false;
 		Context2d context1 = myCanvas.getContext2d();
 		
-		final int REFRESH_MAX = 4;
-		int count = 0;
+//		final int REFRESH_MAX = 4;
+//		int count = 0;
 
 		@Override
 		public void onMouseDown(MouseDownEvent event) {
@@ -377,7 +359,7 @@ public class StockWatcher implements EntryPoint {
 		public void onMouseOut(MouseOutEvent event) {
 			context1.stroke();
 			context1.closePath();
-			count = 0;
+//			count = 0;
 		}
 
 		@Override
@@ -385,7 +367,7 @@ public class StockWatcher implements EntryPoint {
 			mouseDown = false;
 			context1.stroke();
 			context1.closePath();
-			count = 0;
+//			count = 0;
 		}
 
 		@Override
@@ -402,16 +384,16 @@ public class StockWatcher implements EntryPoint {
 				x = event.getX();
 				y = event.getY();
 				
-				count++;
-				if (count >= REFRESH_MAX)
-				{
-					context1.stroke();
-					context1.closePath();
-					context1.beginPath();
-					x = event.getX();
-					y = event.getY();
-					count = 0;
-				}
+//				count++;
+//				if (count >= REFRESH_MAX)
+//				{
+//					context1.stroke();
+//					context1.closePath();
+//					context1.beginPath();
+//					x = event.getX();
+//					y = event.getY();
+//					count = 0;
+//				}
 			}
 		}
 	}

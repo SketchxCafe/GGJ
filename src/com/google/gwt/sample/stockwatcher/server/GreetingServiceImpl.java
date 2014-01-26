@@ -2,6 +2,7 @@ package com.google.gwt.sample.stockwatcher.server;
 
 import com.google.gwt.sample.stockwatcher.client.GreetingService;
 import com.google.gwt.sample.stockwatcher.shared.FieldVerifier;
+import com.google.gwt.sample.stockwatcher.shared.MyStringUtil;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -44,5 +45,11 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 		}
 		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
 				.replaceAll(">", "&gt;");
+	}
+
+	@Override
+	public String getRandom() throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return MyStringUtil.getRandomString();
 	}
 }
