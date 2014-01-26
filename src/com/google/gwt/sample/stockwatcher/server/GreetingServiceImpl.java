@@ -11,6 +11,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GreetingServiceImpl extends RemoteServiceServlet implements
 		GreetingService {
 
+	public static String currWord = "ERROR!";
+	
 	public String greetServer(String input) throws IllegalArgumentException {
 		// Verify that the input is valid. 
 //		if (!FieldVerifier.isValidName(input)) {
@@ -48,7 +50,15 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public String getRandom() throws IllegalArgumentException {
+		currWord = MyStringUtil.getRandomString();
+		return currWord;
+	}
+
+	
+	
+	@Override
+	public void storeWord(String word, String pictureInfo) {
 		// TODO Auto-generated method stub
-		return MyStringUtil.getRandomString();
+		
 	}
 }

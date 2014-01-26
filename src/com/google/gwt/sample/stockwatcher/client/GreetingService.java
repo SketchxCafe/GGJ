@@ -1,6 +1,5 @@
 package com.google.gwt.sample.stockwatcher.client;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -13,4 +12,6 @@ public interface GreetingService extends RemoteService {
 	
 	String getRandom()
 			throws IllegalArgumentException;
+	
+	void storeWord(String word, String pictureInfo);
 }

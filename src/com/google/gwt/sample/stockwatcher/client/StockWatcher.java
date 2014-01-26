@@ -102,7 +102,7 @@ public class StockWatcher implements EntryPoint {
 		//UI_MenuPanel.add(UploadPanel);
 		UploadPanel.setWidth("315px");
 
-		Label lblUploadACute = new Label("Upload a cute Tree Picture!");
+		Label lblUploadACute = new Label("Upload a Picture!");
 		lblUploadACute.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		UploadPanel.add(lblUploadACute);
 
@@ -296,10 +296,33 @@ public class StockWatcher implements EntryPoint {
 //		sendButton.addClickHandler(handler);
 //		nameField.addKeyUpHandler(handler);
 		
-		//RootLayoutPanel.get().add(new UIDrawings());
+		Button myButtonYay = new Button("Raaandom!");
+		myButtonYay.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				greetingService.getRandom(new AsyncCallback<String>() {
+					
+					@Override
+					public void onSuccess(String result) {
+						System.out.println("The word is..... " + result);
+						RootPanel.get().add(new Label("The word is..... " + result));
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						System.out.println("Rand Failed");
+					}
+				});
+			}
+		});
+		
+		RootPanel.get().add(myButtonYay);
+		
+		
+		RootPanel.get().add(new UIDrawings());
 		
 		//RootLayoutPanel.get().add(new ScrollPanel(drawPanel));
-		
 		
 	}
 
@@ -379,9 +402,10 @@ public class StockWatcher implements EntryPoint {
 				context1.lineTo(event.getX(), event.getY());
 				//context1.arc(event.getX(), event.getY(), 5, 0, 360);
 				//context1.fill();
-				//context1.stroke();
-				//context1.closePath();
-//				System.out.println(x + " "+ y);
+				context1.stroke();
+				context1.closePath();
+				context1.beginPath();
+				//System.out.println(x + " "+ y);
 				x = event.getX();
 				y = event.getY();
 				

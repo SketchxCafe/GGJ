@@ -11,4 +11,6 @@ public interface GreetingServiceAsync {
 	
 	void getRandom(AsyncCallback<String> callback)
 			throws IllegalArgumentException;
+	
+	void storeWord(String word, String pictureInfo, AsyncCallback<Void> callback);
 }

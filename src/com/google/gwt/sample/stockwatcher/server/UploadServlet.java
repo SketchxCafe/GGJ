@@ -49,6 +49,7 @@ public class UploadServlet extends HttpServlet{
 			Entity imageBlob = new Entity("ImageBlob");
 			imageBlob.setProperty("blobKey", blobKey);
 			imageBlob.setProperty(ImageBlob.SERVING_URL, iUrl);
+			imageBlob.setProperty(ImageBlob.WORD, GreetingServiceImpl.currWord);
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			datastore.put(imageBlob);
 
