@@ -1,11 +1,15 @@
 package com.google.gwt.sample.stockwatcher.client;
 
 import org.vaadin.gwtgraphics.client.DrawingArea;
+import org.vaadin.gwtgraphics.client.Line;
+import org.vaadin.gwtgraphics.client.VectorObject;
 import org.vaadin.gwtgraphics.client.shape.Circle;
+import org.vaadin.gwtgraphics.client.shape.Rectangle;
 
 import com.google.gwt.sample.stockwatcher.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -53,19 +57,24 @@ public class StockWatcher implements EntryPoint {
 		final DrawingArea canvas = new DrawingArea(400, 400);
 		RootPanel.get().add(canvas);
 		
-		// set size, colour
+//		VectorObject bg = new VectorObject(); 
+//		//"Rorschach_inkblot_test_01.jpg";
+//		canvas.add(VectorObject bg);
 		
-		final Circle circle = new Circle(0, 0, 10);
+		// set size, colour	
+		final Circle circle = new Circle(0, 0, 1);
 		canvas.add(circle);
 		canvas.addMouseMoveHandler(new MouseMoveHandler() {
 			public void onMouseMove(MouseMoveEvent event) {
-				circle.setFillColor("black");
-				circle.setX(event.getX());
-				circle.setY(event.getY());
-				canvas.add(new Circle(event.getX(), event.getY(), 10));
+				circle.setFillColor("green");
+				circle.setStrokeOpacity(0);				
+				Circle circle2 = new Circle(event.getX(), event.getY(), 1);
+				circle2.setFillColor("green");
+				circle2.setStrokeOpacity(0);
+				canvas.add(circle2);				
 			}
 		});
-		
+				
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
 

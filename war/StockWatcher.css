@@ -1,7 +1,63 @@
 /** Add css rules here for your application. */
+html, body {
+	padding:0;
+}
 
+#drawBG {
+	position:fixed;
+	left:0px;
+	top:0px;
+}
 
-/** Example rules used by the template application (remove for your app) */
+#guessBG {
+	position:fixed;
+	left:0px;
+	top:0px;
+}
+
+#outline {
+	border-radius: 5px;
+	border: 5px solid #442F0D;
+	background: #FFE58C;
+}
+
+#topPanel {
+	background-color: #442F0D;
+	margin:0;
+	border-radius: 5px;
+}
+
+#bottomPanel {
+	background-color: #442F0D;	
+	border: 5px solid #442F0D;
+ 	margin:0;
+ 	border-radius: 5px;
+}
+
+#word {
+	background-color: green;
+}
+
+#div {
+	background-color: blue;
+	clear:both;
+	margin:0;
+}
+
+#palette {
+	position: fixed;
+	background-color: #31252F;
+	left: 10px;
+	top: 380px;
+	margin:0;
+	border-collapse: collapse;
+	cellpadding:0;
+	cellspacing:0;
+}
+
+#side {	
+	float: right;
+}
 h1 {
   font-size: 2em;
   font-weight: bold;
@@ -31,4 +87,11 @@ h1 {
 /** Set ids using widget.getElement().setId("idOfElement") */
 #closeButton {
   margin: 15px 6px 6px;
+}
+
+#colourn {
+/*  background:transparent; */
+position:static;
+border-width:5px;
+border-style:solid;
 }

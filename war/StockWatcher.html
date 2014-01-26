@@ -32,7 +32,7 @@
   <!-- to create a completely dynamic UI.        -->
   <!--                                           -->
   <body>
-
+   
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
     
@@ -44,8 +44,57 @@
       </div>
     </noscript>
 
-    <h1>Web Application Starter Project</h1>
+    <!-- <h1>Web Application Starter Project</h1>  -->
+    
+       <div>
+		<!-- <img id="guessBG" src="guessing.png"> --> 
+        <img id="drawBG" src="drawing.png">
 
+
+<table>
+
+<style type="text/javascript" language="javascript" src="stockwatcher/palette.js"></style>
+
+<div id="word" >
+<table>
+<tr>
+<td width=250px height=90px style="none"></td>
+<td width=250px height=90px name="word">Bird</td>
+</tr>
+</table>
+
+</div>
+
+<table id="palette">
+<tr>
+<td>
+		<input type="image" src="FinnishButton.png" name="image" onclick="finish()"/>   	   
+        <input type="image" src="B_Pen1px.png" name="image" onclick="size_change(one)"/>   	
+    	<input type="image" src="B_ColourPink.png" name="image" onclick="colour_change(###)"/>    	
+    	<input type="image" src="B_ColourRed.png" name="image" onclick="colour_change(###)"/>    	
+    	<input type="image" src="B_ColourYellow.png" name="image" onclick="colour_change(###)"/>   
+    	<input type="image" src="B_ColourGreen.png" name="image" onclick="colour_change(###)"/>    	
+    	<input type="image" src="B_ColourBlue.png" name="image" onclick="colour_change(###)"/>    	
+    	<input type="image" src="B_ColourPurple.png" name="image" onclick="colour_change(###)"/>    
+    	<input type="image" src="B_Eraser.png" name="image" onclick="colour_change(###)"/>   	   	
+
+		<br>
+		<input type="image" src="IQuitButton.png" name="image" onclick="quit()"/>   	
+       	<input type="image" src="B_Pen3px.png" name="image" onclick="size_change(three)"/>  
+    	<input type="image" src="B_ColourGrey.png" name="image" onclick="colour_change(###)"/>   	
+    	<input type="image" src="B_ColourBrown.png" name="image" onclick="colour_chane(###)"/>    	
+    	<input type="image" src="B_ColourOrange.png" name="image" onclick="colour_change(###)"/>    
+    	<input type="image" src="B_ColourLime.png" name="image" onclick="colour_change(###)"/>    	
+    	<input type="image" src="B_ColourSea.png" name="image" onclick="colour_change(###)"/>    	
+    	<input type="image" src="B_ColourBlack.png" name="image" onclick="colour_change(###)"/>  
+       	<input type="image" src="B_Trash.png" name="image" onclick="trash()"/>
+</td>
+</tr>
+</table>
+  	
+</table>
+    </div>
+    <div id="side">
     <table align="center">
       <tr>
         <td colspan="2" style="font-weight:bold;">Please enter your name:</td>        
@@ -58,5 +107,6 @@
         <td colspan="2" style="color:red;" id="errorLabelContainer"></td>
       </tr>
     </table>
+    </div>
   </body>
 </html>
