@@ -1,5 +1,10 @@
 package com.google.gwt.sample.stockwatcher.client;
 
+import java.awt.FileDialog;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+
 import org.vaadin.gwtgraphics.client.DrawingArea;
 import org.vaadin.gwtgraphics.client.Image;
 
@@ -28,6 +33,7 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.sample.stockwatcher.shared.FieldVerifier;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -135,6 +141,11 @@ public class StockWatcher implements EntryPoint {
 				System.out.println(fileUpload.getFilename());
 				com.google.gwt.user.client.Window.alert(("Yay! You chose a file! Magic-magic-magic!!!!\n"+
 						fileUpload.getFilename()));
+				
+				
+				
+				//form.add
+				System.out.println("2Data url: " + myCanvas.toDataUrl("image/png"));
 				//startNewBlobstoreSession();
 				form.submit();
 
@@ -176,9 +187,32 @@ public class StockWatcher implements EntryPoint {
 		//form.add(UploadPanel);
 		RootPanel.get().add(form);
 
+//		final FileUpload fileBlah = new FileUpload();
+//		RootPanel.get().add(fileBlah);
+//		
+//		fileBlah.addChangeHandler( new ChangeHandler() {
+//			
+//			@Override
+//			public void onChange(ChangeEvent event) {
+//				System.out.print(fileBlah.getFilename());
+//				//TODO: Compatibility for other platforms
+//				File myFile = new File(fileBlah.getFilename().substring(0, fileBlah.getFilename().lastIndexOf('\\')));
+//				
+//			}
+//		});
+		
 
-
-
+		Button myButton = new Button("Save the image.");
+		myButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				String data = myCanvas.toDataUrl("image/png");
+				//data = data.replaceFirst("image/png", "image/octet-stream");
+				Window.open(data, "file", null);
+			}
+		});
+		RootPanel.get().add(myButton);
 
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
@@ -364,7 +398,7 @@ public class StockWatcher implements EntryPoint {
 				//context1.fill();
 				//context1.stroke();
 				//context1.closePath();
-				System.out.println(x + " "+ y);
+//				System.out.println(x + " "+ y);
 				x = event.getX();
 				y = event.getY();
 				
