@@ -1,10 +1,13 @@
 package com.google.gwt.sample.stockwatcher.client;
 
 
+import java.security.DomainCombiner;
+
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -68,6 +71,10 @@ public class StockWatcher implements EntryPoint {
 	public void onModuleLoad() {
 		myCanvas.getElement().setId("coolCanvas");
 		
+//		myCanvas = (Canvas) RootPanel.get("coolCanvas");
+		//Canvas.w
+		
+		//myCanvas = Canvas Document.get().getElementById("coolCanvas");
 		//RootLayoutPanel.get().add(new UIDrawings());
 		
 		final Button sendButton = new Button("Send");
@@ -78,9 +85,9 @@ public class StockWatcher implements EntryPoint {
 
 		//Canvas for drawing
 
-		myCanvas.setCoordinateSpaceHeight(800);
-		myCanvas.setCoordinateSpaceWidth(800);
-		myCanvas.setPixelSize(800, 800);
+//		myCanvas.setCoordinateSpaceHeight(800);
+//		myCanvas.setCoordinateSpaceWidth(800);
+//		myCanvas.setPixelSize(800, 800);
 		Context2d context1 = myCanvas.getContext2d();
 		
 		context1.arc(0, 100, 30, 0, 80);
@@ -89,6 +96,30 @@ public class StockWatcher implements EntryPoint {
 
 		RootPanel.get().add(myCanvas);
 
+//		Button btn1 = new Button("<img src=\"FinnishButton.png\" name=\"image\" onclick=\"finish()\">");
+//		Button btn2 = new Button("<img src="B_ColourPink.png" name="image" onclick="colorChange("#FF8478")");
+//		Button btn3 = new Button("<img src="B_ColourRed.png" name="image" onclick="colorChange("#FF3753")"/>");
+//		Button btn4 = new Button("<img src="B_ColourYellow.png" name="image" onclick="colorChange("#FF9B3B")"/> ");
+//		Button btn5 = new Button("<img src="B_ColourGreen.png" name="image" onclick="colorChange("#395735")"/> ");
+//		Button btn6 = new Button("<img src="B_ColourBlue.png" name="image" onclick="colorChange("#014880")"/>");
+//		Button btn7 = new Button("<img src=\"FinnishButton.png\" name=\"image\" onclick=\"finish()\">");
+//		Button btn8 = new Button("<img src=\"FinnishButton.png\" name=\"image\" onclick=\"finish()\">");
+//		Button btn9 = new Button("<img src=\"FinnishButton.png\" name=\"image\" onclick=\"finish()\">");
+//		
+//		
+//		
+//
+//    	<input type="image" src="B_ColourPink.png" name="image" onclick="colorChange("#FF8478")"/>    	
+//    	<input type="image" src="B_ColourRed.png" name="image" onclick="colorChange("#FF3753")"/>    	
+//    	<input type="image"    	
+//    	<input type="image"    	
+//    	<input type="image"     	
+//    	<input type="image" src="B_ColourPurple.png" name="image" onclick="colorChange("#49306A")"/>    	
+//    	<input type="image" src="B_Eraser.png" name="image" onclick="colorChange("#FFE58
+//		
+//		
+//		
+//		
 		myCanvas.addMouseMoveHandler(myMouseHandler);
 		myCanvas.addMouseDownHandler(myMouseHandler);
 		myCanvas.addMouseUpHandler(myMouseHandler);
