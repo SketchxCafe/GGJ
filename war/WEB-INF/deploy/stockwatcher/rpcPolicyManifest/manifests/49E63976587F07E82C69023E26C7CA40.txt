@@ -1,0 +1,2 @@
+serviceClass: com.google.gwt.sample.stockwatcher.client.ImageService
+path: 090943DC71988C789143DA574AA18227.gwt.rpc
