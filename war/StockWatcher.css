@@ -1,18 +1,8 @@
 /** Add css rules here for your application. */
-html, body {
-	padding:0;
-}
-
-#drawBG {
-	position:fixed;
-	left:0px;
-	top:0px;
-}
-
-#guessBG {
-	position:fixed;
-	left:0px;
-	top:0px;
+body {
+	color: #442F0D;
+	font-size: 200%;
+	font-family: Times Roman, Verdana;
 }
 
 #outline {
@@ -35,29 +25,22 @@ html, body {
 }
 
 #word {
-	background-color: green;
+	height:70px;
 }
 
-#div {
-	background-color: blue;
-	clear:both;
-	margin:0;
+#guessWord {
+	
+}
+
+#drawingSpace {
+	height:400px;	
 }
 
 #palette {
-	position: fixed;
 	background-color: #31252F;
-	left: 10px;
-	top: 380px;
 	margin:0;
-	border-collapse: collapse;
-	cellpadding:0;
-	cellspacing:0;
 }
 
-#side {	
-	float: right;
-}
 h1 {
   font-size: 2em;
   font-weight: bold;

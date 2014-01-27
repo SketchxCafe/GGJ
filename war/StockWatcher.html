@@ -45,55 +45,74 @@
     </noscript>
 
     <!-- <h1>Web Application Starter Project</h1>  -->
-    
-       <div>
+   
 		<!-- <img id="guessBG" src="guessing.png"> --> 
-        <img id="drawBG" src="drawing.png">
+	<style type="text/javascript" language="javascript" src="stockwatcher/palette.js"></style>
+  
+    <!--     <img id="drawBG" src="drawing.png"> </img>
+ -->
+<table id="outline">
+	<tr id="word">
+	<td colspan="3" id="top" width=50px><p>Show Them: </p></td>
+	<td colspan="6" id="guessWord" ><p>---Loading---</p></td>
+	</tr>
 
 
-<table>
 
-<style type="text/javascript" language="javascript" src="palette.js"></style>
+ <tr id="drawingSpace">
+	<td colspan="9">
+	<canvas id="coolChanvas" height=400px width=375px>
+	</canvas>
+	</td>
+	</tr>
+<script>
+function check() {
+	alert("JavaScript");
+}
 
-<div id="word" >
-<table>
-<tr>
-<td width=250px height=90px style="none"></td>
-<td width=250px height=90px name="word">Bird</td>
-</tr>
-</table>
+function getCanvas() {
+	
+}
 
-</div>
+//canvas
+function colorChange(id) {
+	var getTheCanvas = document.getElementById("coolCanvas");
+	var canvas = getTheCanvas.getContext('2d');
+	canvas.strokeStyle=id;
+}
 
-<table id="palette">
-<tr>
-<td>
-		<input type="image" src="FinnishButton.png" name="image" onclick="finish()"/>   	   
-        <input type="image" src="B_Pen1px.png" name="image" onclick="size_change(one)"/>   	
-    	<input type="image" src="B_ColourPink.png" name="image" onclick="colour_change(###)"/>    	
-    	<input type="image" src="B_ColourRed.png" name="image" onclick="colour_change(###)"/>    	
-    	<input type="image" src="B_ColourYellow.png" name="image" onclick="colour_change(###)"/>   
-    	<input type="image" src="B_ColourGreen.png" name="image" onclick="colour_change(###)"/>    	
-    	<input type="image" src="B_ColourBlue.png" name="image" onclick="colour_change(###)"/>    	
-    	<input type="image" src="B_ColourPurple.png" name="image" onclick="colour_change(###)"/>    
-    	<input type="image" src="B_Eraser.png" name="image" onclick="colour_change(###)"/>   	   	
+function penSize(id) {
+	var getTheCanvas = document.getElementById("coolCanvas");
+	var canvas = getTheCanvas.getContext('2d');
+	canvas.lineWidth=id;
+}
+</script>
 
-		<br>
-		<input type="image" src="IQuitButton.png" name="image" onclick="quit()"/>   	
-       	<input type="image" src="B_Pen3px.png" name="image" onclick="size_change(three)"/>  
-    	<input type="image" src="B_ColourGrey.png" name="image" onclick="colour_change(###)"/>   	
-    	<input type="image" src="B_ColourBrown.png" name="image" onclick="colour_chane(###)"/>    	
-    	<input type="image" src="B_ColourOrange.png" name="image" onclick="colour_change(###)"/>    
-    	<input type="image" src="B_ColourLime.png" name="image" onclick="colour_change(###)"/>    	
-    	<input type="image" src="B_ColourSea.png" name="image" onclick="colour_change(###)"/>    	
-    	<input type="image" src="B_ColourBlack.png" name="image" onclick="colour_change(###)"/>  
+    <tr id="palette"> 
+    <td colspan="9">
+    	<input type="image" src="FinnishButton.png" name="image" onclick="check()"/>    	
+    	<input type="image" src="B_Pen1px.png" name="image" onclick="penSize(1)"/>    	
+    	<input type="image" src="B_ColourPink.png" name="image" onclick="colorChange('#FF8478')"/>    	
+    	<input type="image" src="B_ColourRed.png" name="image" onclick="colorChange('#FF3753')"/>    	
+    	<input type="image" src="B_ColourYellow.png" name="image" onclick="colorChange('#FF9B3B")'/>    	
+    	<input type="image" src="B_ColourGreen.png" name="image" onclick="colorChange('#395735')"/>    	
+    	<input type="image" src="B_ColourBlue.png" name="image" onclick="colorChange('#014880')"/>    	
+    	<input type="image" src="B_ColourPurple.png" name="image" onclick="colorChange('#49306A')"/>    	
+    	<input type="image" src="B_Eraser.png" name="image" onclick="colorChange('#FFE58C')"/>   	   	
+	<br>
+    	<input type="image" src="IQuitButton.png" name="image" onclick="quit()"/>    	
+    	<input type="image" src="B_Pen3px.png" name="image" onclick="penSize(3)"/>  
+    	<input type="image" src="B_ColourGrey.png" name="image" onclick="colorChange('#')"/>    	
+    	<input type="image" src="B_ColourBrown.png" name="image" onclick="colorChange('#')"/>    	
+    	<input type="image" src="B_ColourOrange.png" name="image" onclick="colorChange('#E35736')"/>    	
+    	<input type="image" src="B_ColourLime.png" name="image" onclick="colorChange('#8A8F4D')"/>    	
+    	<input type="image" src="B_ColourSea.png" name="image" onclick="colorChange('#157083')"/>    	
+    	<input type="image" src="B_ColourBlack.png" name="image" onclick="colorChange('#31252F')"/>  
        	<input type="image" src="B_Trash.png" name="image" onclick="trash()"/>
-</td>
-</tr>
+    	  	</td>
+    </tr>
 </table>
-  	
-</table>
-    </div>
+  
     <div id="side">
     <table align="center">
       <tr>
@@ -108,5 +127,6 @@
       </tr>
     </table>
     </div>
+    
   </body>
 </html>
