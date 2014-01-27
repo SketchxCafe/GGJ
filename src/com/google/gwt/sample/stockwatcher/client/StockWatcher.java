@@ -80,9 +80,9 @@ public class StockWatcher implements EntryPoint {
 
 		//Canvas for drawing
 
-		myCanvas.setCoordinateSpaceHeight(800);
-		myCanvas.setCoordinateSpaceWidth(800);
-		myCanvas.setPixelSize(800, 800);
+		myCanvas.setCoordinateSpaceHeight(400);
+		myCanvas.setCoordinateSpaceWidth(600);
+		myCanvas.setPixelSize(600, 400);
 		Context2d context1 = myCanvas.getContext2d();
 		
 		context1.arc(0, 100, 30, 0, 80);
@@ -222,9 +222,9 @@ public class StockWatcher implements EntryPoint {
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
-		RootPanel.get("nameFieldContainer").add(nameField);
-		RootPanel.get("sendButtonContainer").add(sendButton);
-		RootPanel.get("errorLabelContainer").add(errorLabel);
+//		RootPanel.get("nameFieldContainer").add(nameField);
+//		RootPanel.get("sendButtonContainer").add(sendButton);
+//		RootPanel.get("errorLabelContainer").add(errorLabel);
 
 		// Focus the cursor on the name field when the app loads
 		nameField.setFocus(true);
@@ -284,7 +284,7 @@ public class StockWatcher implements EntryPoint {
 //				errorLabel.setText("");
 //				String textToServer = nameField.getText();
 //				if (!FieldVerifier.isValidName(textToServer)) {
-//					errorLabel.setText("Please enter at least four characters");
+//					errorLabel.setText(" enter at least four characters");
 //					return;
 //				}
 //
@@ -327,7 +327,7 @@ public class StockWatcher implements EntryPoint {
 			@Override
 			public void onSuccess(String result) {
 				com.google.gwt.dom.client.Element guessText = Document.get().getElementById("guessWord");
-				guessText.setInnerHTML(result);
+				guessText.setInnerHTML("<H1>" + result + "</H1>");
 			}
 			
 			@Override
@@ -347,7 +347,7 @@ public class StockWatcher implements EntryPoint {
 					public void onSuccess(String result) {
 						System.out.println("The word is..... " + result);
 						com.google.gwt.dom.client.Element guessText = Document.get().getElementById("guessWord");
-						guessText.setInnerHTML(result);
+						guessText.setInnerHTML("<H1>" + result + "</H1>");
 					}
 					
 					@Override
@@ -402,8 +402,8 @@ public class StockWatcher implements EntryPoint {
 		boolean mouseDown = false;
 		Context2d context1 = myCanvas.getContext2d();
 		
-//		final int REFRESH_MAX = 4;
-//		int count = 0;
+		final int REFRESH_MAX = 4;
+		int count = 0;
 
 		@Override
 		public void onMouseDown(MouseDownEvent event) {
@@ -424,7 +424,7 @@ public class StockWatcher implements EntryPoint {
 		public void onMouseOut(MouseOutEvent event) {
 			context1.stroke();
 			context1.closePath();
-//			count = 0;
+			count = 0;
 		}
 
 		@Override
@@ -432,7 +432,7 @@ public class StockWatcher implements EntryPoint {
 			mouseDown = false;
 			context1.stroke();
 			context1.closePath();
-//			count = 0;
+			count = 0;
 		}
 
 		@Override
@@ -450,16 +450,16 @@ public class StockWatcher implements EntryPoint {
 				x = event.getX();
 				y = event.getY();
 				
-//				count++;
-//				if (count >= REFRESH_MAX)
-//				{
-//					context1.stroke();
-//					context1.closePath();
-//					context1.beginPath();
-//					x = event.getX();
-//					y = event.getY();
-//					count = 0;
-//				}
+				count++;
+				if (count >= REFRESH_MAX)
+				{
+					context1.stroke();
+					context1.closePath();
+					context1.beginPath();
+					x = event.getX();
+					y = event.getY();
+					count = 0;
+				}
 			}
 		}
 	}
