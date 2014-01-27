@@ -2,7 +2,7 @@ package com.google.gwt.sample.stockwatcher.shared;
 
 public class MyStringUtil {
 
-	private static String[] stringList = {"horse", "unicorn", "pokemon", "crayon", "dog", "blah", "nothingness", "void", "depression"};
+	private static String[] stringList = {"Horse", "Unicorn", "Pokemon", "Crayon", "Dog", "Blah", "Nothingness", "Void", "Depression", "City"};
 	
 	public static String getRandomString()
 	{
@@ -19,5 +19,10 @@ public class MyStringUtil {
 				ans = true;
 		}
 		return ans;
+	}
+	
+	public static boolean checkForRightString(String target, String guesses)
+	{
+		return guesses.toLowerCase().contains(target.toLowerCase());
 	}
 }

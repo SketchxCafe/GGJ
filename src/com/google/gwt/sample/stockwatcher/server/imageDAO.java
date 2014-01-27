@@ -40,6 +40,7 @@ public class imageDAO {
 		ImageBlob image = new ImageBlob();
 		
 		image.setServingUrl((String) result.getProperty(ImageBlob.SERVING_URL));
+		image.setWord((String) result.getProperty(ImageBlob.WORD));
 		System.out.println("fromEntity says that the surl is " + (String) result.getProperty(ImageBlob.SERVING_URL));
 		//image.setOwnerId((String) result.getProperty(ImageBlob.OWNER_ID));
 

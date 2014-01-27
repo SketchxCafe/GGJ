@@ -10,6 +10,8 @@ import javax.jdo.annotations.PersistenceCapable;
 public class ImageBlob implements Serializable{
 	public static final String SERVING_URL = "servingUrl";
 	public static final String OWNER_ID = "ownerId";
+	public static final String WORD = "word";
+	String word;
 	String key;
 	String servingUrl;
 	String ownerId;
@@ -37,6 +39,13 @@ public class ImageBlob implements Serializable{
 		this.ownerId = ownerId;
 	}
 
+	public String getWord() {
+		return word;
+	}
+
+	public void setWord(String word) {
+		this.word = word;
+	}
 
 
 }
