@@ -7,12 +7,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.sample.stockwatcher.shared.MyStringUtil;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 
 public class UIDrawings extends LayoutPanel{
 
@@ -75,55 +74,65 @@ public class UIDrawings extends LayoutPanel{
 		}
 
 		public void addStuff(){
-			//			TextArea myTA = new TextArea();
-			//			Button blah = new Button("Check!");
-			//			blah.addClickHandler(new ClickHandler() {
-			//				
-			//				@Override
-			//				public void onClick(ClickEvent event) {
-			//					// TODO Auto-generated method stub
-			//					
-			//				}
-			//			});
+			
+			/// TextBox with options
+			
+			final TextBox myTA = new TextBox();
+			final Button blah = new Button("Check!");
+			blah.addClickHandler(new ClickHandler() {
 
-			for (int i = 0; i < options.length; i++)
-			{
-				if (i == correctNum)
-				{
-					Button a = new Button(options[i]);
-					fp.add(a);
-					a.addClickHandler(new ClickHandler() {
-
-						@Override
-						public void onClick(ClickEvent event) {
-							((Button) event.getSource()).setText("Right!");
-							//							final DialogBox dialogBox = new DialogBox();
-							//							dialogBox.setAnimationEnabled(true);
-							//							dialogBox.setText("Blah");
-							//							dialogBox.setTitle("Right!!");
-							//							dialogBox.show();
-						}
-					});
+				@Override
+				public void onClick(ClickEvent event) {
+					if (MyStringUtil.checkForRightString(options[correctNum], myTA.getText()))
+						blah.setText("Check: Right!");
+					else
+						blah.setText("Check: False");
 				}
-				else
-				{
-					Button a = new Button(options[i]);
-					fp.add(a);
-					a.addClickHandler(new ClickHandler() {
+			});
+			
+			fp.add(myTA);
+			fp.add(blah);
 
-						@Override
-						public void onClick(ClickEvent event) {
-							((Button) event.getSource()).setText("Wrong!");
-							//							final DialogBox dialogBox = new DialogBox();
-							//							dialogBox.setText("Blah");
-							//							dialogBox.setTitle("Wrong!!");
-							//							dialogBox.center();
-							//							//closeButton.setFocus(true);
-							//							dialogBox.show();
-						}
-					});
-				}
-			}
+			///Buttons with options
+			
+//			for (int i = 0; i < options.length; i++)
+//			{
+//				if (i == correctNum)
+//				{
+//					Button a = new Button(options[i]);
+//					fp.add(a);
+//					a.addClickHandler(new ClickHandler() {
+//
+//						@Override
+//						public void onClick(ClickEvent event) {
+//							((Button) event.getSource()).setText("Right!");
+//							//							final DialogBox dialogBox = new DialogBox();
+//							//							dialogBox.setAnimationEnabled(true);
+//							//							dialogBox.setText("Blah");
+//							//							dialogBox.setTitle("Right!!");
+//							//							dialogBox.show();
+//						}
+//					});
+//				}
+//				else
+//				{
+//					Button a = new Button(options[i]);
+//					fp.add(a);
+//					a.addClickHandler(new ClickHandler() {
+//
+//						@Override
+//						public void onClick(ClickEvent event) {
+//							((Button) event.getSource()).setText("Wrong!");
+//							//							final DialogBox dialogBox = new DialogBox();
+//							//							dialogBox.setText("Blah");
+//							//							dialogBox.setTitle("Wrong!!");
+//							//							dialogBox.center();
+//							//							//closeButton.setFocus(true);
+//							//							dialogBox.show();
+//						}
+//					});
+//				}
+//			}
 		}
 	}
 }

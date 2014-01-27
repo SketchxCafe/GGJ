@@ -20,4 +20,9 @@ public class MyStringUtil {
 		}
 		return ans;
 	}
+	
+	public static boolean checkForRightString(String target, String guesses)
+	{
+		return guesses.toLowerCase().contains(target.toLowerCase());
+	}
 }
