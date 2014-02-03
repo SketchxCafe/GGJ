@@ -1,0 +1,25 @@
+# git ls-files --others --exclude-from=.git/info/exclude
+# Lines that start with '#' are comments.
+# For a project mostly in C, the following would be a good set of
+# exclude patterns (uncomment them if you want to use them):
+# *.[oa]
+# *~
+
+# From http://witterk.blogspot.ca/2012/05/gitignore-for-gwt-and-java-app-engine.html
+
+# gwt caches and compiled units #
+war/stockwatcher/
+gwt-unitCache/
+test-classes/
+www-test/
+
+# boilerplate generated classes #
+.apt_generated/
+
+# more caches and things from deploy #
+war/WEB-INF/deploy/
+war/WEB-INF/classes/
+
+# App engine generated #
+
+war/WEB-INF/appengine-generated/

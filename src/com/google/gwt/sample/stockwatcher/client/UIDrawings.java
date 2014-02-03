@@ -7,16 +7,19 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.sample.stockwatcher.shared.MyStringUtil;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class UIDrawings extends LayoutPanel{
+public class UIDrawings extends VerticalPanel{
 
+	private static UIDrawings instance = null;
+	
 	public UIDrawings(){
-		this.add(new Label("Hallo"));
+		super();
+		instance = this;
+		this.add(new Label("Hallo! I take some time to load.."));
 
 
 		StockWatcher.imageService.getRecentlyUploaded(new AsyncCallback<LinkedList<ImageBlob>>(){
@@ -31,7 +34,7 @@ public class UIDrawings extends LayoutPanel{
 				System.out.println("Yay! S. from RU.");
 				for (ImageBlob current: result)
 				{
-					FlowPanel myFP = new FlowPanel();
+					//FlowPanel myFP = new FlowPanel();
 
 					com.google.gwt.user.client.ui.Image myImage = new com.google.gwt.user.client.ui.Image(current.servingUrl);
 					//myImage.setSize("100%", "100%");
@@ -47,7 +50,8 @@ public class UIDrawings extends LayoutPanel{
 						//a.fp.add(myLabel);
 						a.addStuff();
 						//a.fp.setWidth("500px");
-						RootPanel.get().add(a.fp);
+						if (UIDrawings.instance!=null)
+							UIDrawings.instance.add(a.fp);
 					}
 					//System.out.println("Loaded an image of " + current.getWord() +".");
 				}
@@ -57,11 +61,11 @@ public class UIDrawings extends LayoutPanel{
 
 	private class UIDraw{
 		String [] options;
-		FlowPanel fp;
+		VerticalPanel fp;
 		int correctNum = (int) (Math.random()*5);
 
 		UIDraw(String correct){
-			fp = new FlowPanel();
+			fp = new VerticalPanel();
 			options = new String[5];
 			options[0] = correct;
 			for (int i = 1; i < options.length; i++)
@@ -90,8 +94,10 @@ public class UIDrawings extends LayoutPanel{
 				}
 			});
 			
-			fp.add(myTA);
-			fp.add(blah);
+			HorizontalPanel buttonsPanel = new HorizontalPanel();
+			buttonsPanel.add(myTA);
+			buttonsPanel.add(blah);
+			fp.add(buttonsPanel);
 
 			///Buttons with options
 			

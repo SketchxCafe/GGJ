@@ -1,17 +1,14 @@
 package com.google.gwt.sample.stockwatcher.server;
 import java.util.LinkedList;
 
-import com.google.gwt.sample.stockwatcher.client.ImageBlob;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gwt.sample.stockwatcher.client.ImageBlob;
 
 public class imageDAO {
 	DatastoreService datastore;

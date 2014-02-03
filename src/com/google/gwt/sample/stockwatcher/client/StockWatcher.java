@@ -6,6 +6,7 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,28 +25,22 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class StockWatcher implements EntryPoint {
-	/**
-	 * The message displayed to the user when the server cannot be reached or
-	 * returns an error.
-	 */
-	private static final String SERVER_ERROR = "An error occurred while "
-			+ "attempting to contact the server. Please check your network "
-			+ "connection and try again.";
 
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
@@ -58,74 +53,145 @@ public class StockWatcher implements EntryPoint {
 	DrawListener myMouseHandler = new DrawListener();
 	public static final ImageServiceAsync imageService = GWT.create(ImageService.class);
 
-	//public LayoutPanel drawPanel = new LayoutPanel();
-	
+
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		myCanvas.getElement().setId("coolCanvas");
-		
-//		myCanvas = (Canvas) RootPanel.get("coolCanvas");
-		//Canvas.w
-		
-		//myCanvas = Canvas Document.get().getElementById("coolCanvas");
-		//RootLayoutPanel.get().add(new UIDrawings());
-		
-		final Button sendButton = new Button("Send");
-		final TextBox nameField = new TextBox();
-		nameField.setText("GWT User");
-		final Label errorLabel = new Label();
 
+		/**
+		 * High-level panel with tabs.
+		 */
+		TabLayoutPanel myTLP = new TabLayoutPanel(40, Unit.PX);
+		RootLayoutPanel.get().add(myTLP);
+		
+		/**
+		 * Panel with general information.
+		 */
+		Panel infoPage = new VerticalPanel();
+		HTMLPanel wellcomeText = new HTMLPanel("<H2>Wellcome to Abstractly!</H2>"
+				+ "<br>"
+				+ "Here you can draw abstract stuff."
+				+ "<br>"
+				+ "New features comming up!"
+				+ "<br>"
+				+ "Currently, only Crome is supported."
+				+ "<br>"
+				+ "For uploading picture that you have drawn, you first need to download it to your computer. (It is a feature!)");
+		infoPage.add(wellcomeText);
+		myTLP.add(infoPage, "Start");
+		
+		/**
+		 * A panel that contains instruments for drawing and uploading images.
+		 */
+		Panel drawPage = new VerticalPanel();
+		myTLP.add(drawPage, "Make a new drawing");
+		
+		
+		////Building the Drawing interface
 
-		//Canvas for drawing
+		VerticalPanel drawingPanel = new VerticalPanel();
+		drawingPanel.getElement().setId("outline");
+
+		//Text area
+		HorizontalPanel text = new HorizontalPanel();
+		text.getElement().setId("word");
+
+		Label top = new Label("Show them: ");
+		top.getElement().setInnerHTML("<H2>Show them:  </H2>");
+		top.getElement().setId("top");
+		Label word = new Label("");
+		word.getElement().setInnerHTML("<H2>--Loading--</H2>");
+		word.getElement().setId("guessWord");
+
+		text.add(top);
+		text.add(word);
+		drawingPanel.add(text);
+		
+		//Draw area
+		//VerticalPanel drawAr = new VerticalPanel();
+		//drawAr.getElement().setId("drawingSpace");
 
 		myCanvas.setCoordinateSpaceHeight(400);
-		myCanvas.setCoordinateSpaceWidth(600);
-		myCanvas.setPixelSize(600, 400);
-		Context2d context1 = myCanvas.getContext2d();
+		myCanvas.setCoordinateSpaceWidth(375);
+		myCanvas.setPixelSize(375, 400);
 		
+		myCanvas.getElement().setId("coolCanvas");
+
+		//drawAr.add(myCanvas);
+		//drawingPanel.add(drawAr);
+		drawingPanel.add(myCanvas);
+		
+		//Buttons
+		HTMLPanel pal = new HTMLPanel(
+						"<BODY>"
+						
+						+ "<br>"
+						+ "<input type='image' src='FinnishButton.png' name='image' onclick='finish()'/>"
+						+ "<input type='image' src='B_Pen1px.png' name='image' onclick='penSize(1)'/>"
+						+ "<input type='image' src='B_ColourPink.png' name='image' onclick='colorChange(&quot;#FF8478&quot;)'/>"
+						+ "<input type='image' src='B_ColourRed.png' name='image' onclick='colorChange(&quot;#FF3753&quot;)'/>"
+						+ "<input type='image' src='B_ColourYellow.png' name='image' onclick='colorChange(&quot;#FF9B3B&quot;)'/>"
+						+ "<input type='image' src='B_ColourGreen.png' name='image' onclick='colorChange(&quot;#395735&quot;)'/>"
+						+ "<input type='image' src='B_ColourBlue.png' name='image' onclick='colorChange(&quot;#014880&quot;)'/>"
+						+ "<input type='image' src='B_ColourPurple.png' name='image' onclick='colorChange(&quot;#49306A&quot;)'/>"
+						+ "<input type='image' src='B_Eraser.png' name='image' onclick='colorChange(&quot;#FFE58C&quot;)'/>"
+						+ "<br>"
+						+ "<input type='image' src='IQuitButton.png' name='image' onclick='quit()'/>"
+						+ "<input type='image' src='B_Pen3px.png' name='image' onclick='penSize(3)'/>"
+						+ "<input type='image' src='B_ColourGrey.png' name='image' onclick='colorChange(&quot;#846E7B&quot;)'/>"
+						+ "<input type='image' src='B_ColourBrown.png' name='image' onclick='colorChange(&quot;#8E5D59&quot;)'/>"
+						+ "<input type='image' src='B_ColourOrange.png' name='image' onclick='colorChange(&quot;#E35736&quot;)'/>"
+						+ "<input type='image' src='B_ColourLime.png' name='image' onclick='colorChange(&quot;#8A8F4D&quot;)'/>"
+						+ "<input type='image' src='B_ColourSea.png' name='image' onclick='colorChange(&quot;#157083&quot;)'/>"
+						+ "<input type='image' src='B_ColourBlack.png' name='image' onclick='colorChange(&quot;#31252F&quot;)'/>"
+						+ "<input type='image' src='B_Trash.png' name='image' onclick='trash()'/>"
+						+ "</BODY>");
+		pal.getElement().setId("palette");
+		drawingPanel.add(pal);
+
+		
+		drawPage.add(drawingPanel);
+
+		Context2d context1 = myCanvas.getContext2d();
 		context1.arc(0, 100, 30, 0, 80);
 		context1.fill();
 		context1.closePath();
 
-		RootPanel.get().add(myCanvas);
+		//RootLayoutPanel.get().add(new UIDrawings());
 
-//		Button btn1 = new Button("<img src=\"FinnishButton.png\" name=\"image\" onclick=\"finish()\">");
-//		Button btn2 = new Button("<img src="B_ColourPink.png" name="image" onclick="colorChange("#FF8478")");
-//		Button btn3 = new Button("<img src="B_ColourRed.png" name="image" onclick="colorChange("#FF3753")"/>");
-//		Button btn4 = new Button("<img src="B_ColourYellow.png" name="image" onclick="colorChange("#FF9B3B")"/> ");
-//		Button btn5 = new Button("<img src="B_ColourGreen.png" name="image" onclick="colorChange("#395735")"/> ");
-//		Button btn6 = new Button("<img src="B_ColourBlue.png" name="image" onclick="colorChange("#014880")"/>");
-//		Button btn7 = new Button("<img src=\"FinnishButton.png\" name=\"image\" onclick=\"finish()\">");
-//		Button btn8 = new Button("<img src=\"FinnishButton.png\" name=\"image\" onclick=\"finish()\">");
-//		Button btn9 = new Button("<img src=\"FinnishButton.png\" name=\"image\" onclick=\"finish()\">");
-//		
-//		
-//		
-//
-//    	<input type="image" src="B_ColourPink.png" name="image" onclick="colorChange("#FF8478")"/>    	
-//    	<input type="image" src="B_ColourRed.png" name="image" onclick="colorChange("#FF3753")"/>    	
-//    	<input type="image"    	
-//    	<input type="image"    	
-//    	<input type="image"     	
-//    	<input type="image" src="B_ColourPurple.png" name="image" onclick="colorChange("#49306A")"/>    	
-//    	<input type="image" src="B_Eraser.png" name="image" onclick="colorChange("#FFE58
-//		
-//		
-//		
-//		
 		myCanvas.addMouseMoveHandler(myMouseHandler);
 		myCanvas.addMouseDownHandler(myMouseHandler);
 		myCanvas.addMouseUpHandler(myMouseHandler);
 		myCanvas.addMouseOverHandler(myMouseHandler);
 		myCanvas.addMouseOutHandler(myMouseHandler);
+
+
+		/**
+		 * The panel that holds the buttons with actions, related to downloading and uploading.
+		 */
+		HorizontalPanel myButtonPanel = new HorizontalPanel();
+		drawPage.add(myButtonPanel);
+		
+		//Adds button for saving images.
+
+				Button mySaveButton = new Button("Save the image.");
+				mySaveButton.addClickHandler(new ClickHandler() {
+
+					@Override
+					public void onClick(ClickEvent event) {
+						String data = myCanvas.toDataUrl("image/png");
+						data = data.replaceFirst("image/png", "image/octet-stream");
+						Window.open(data, "file", null);
+					}
+				});
+				myButtonPanel.add(mySaveButton);
 		
 		
+		//Buttons for uploading
 
 		VerticalPanel UploadPanel = new VerticalPanel();
 		UploadPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		//UI_MenuPanel.add(UploadPanel);
 		UploadPanel.setWidth("315px");
 
 		Label lblUploadACute = new Label("Upload a Picture!");
@@ -137,23 +203,16 @@ public class StockWatcher implements EntryPoint {
 		UploadPanel.add(fileUpload);
 		form = new FormPanel();
 		form.setWidget(UploadPanel);
-		//form.setEncoding(FormPanel.ENCODING_MULTIPART);
-		//form.setMethod(FormPanel.METHOD_POST);
 		startNewBlobstoreSession();
 		fileUpload.addChangeHandler(new ChangeHandler(){
 
 			@Override
 			public void onChange(ChangeEvent event) {
-				// TODO Auto-generated method stub
 				System.out.println(fileUpload.getFilename());
 				com.google.gwt.user.client.Window.alert(("Yay! You chose a file! Magic-magic-magic!!!!\n"+
 						fileUpload.getFilename()));
-				
-				
-				
-				//form.add
+
 				System.out.println("2Data url: " + myCanvas.toDataUrl("image/png"));
-				//startNewBlobstoreSession();
 				form.submit();
 
 
@@ -165,12 +224,10 @@ public class StockWatcher implements EntryPoint {
 				System.out.println("The event results are " + event.getResults());
 				com.google.gwt.user.client.Window.alert("The event results are " + event.getResults());
 				String key = event.getResults();
-				//key = "ahFjcHNjMzEwdGVhbXRyZWVtaXIPCxIJSW1hZ2VCbG9iGGMM";	//Hardcoded test
 				imageService.get(key, new AsyncCallback<ImageBlob>(){
 
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
 						System.out.println("Naaaaayy!!! =(");
 						com.google.gwt.user.client.Window.alert("Naaaaaayyy!! =(");
 					}
@@ -183,8 +240,6 @@ public class StockWatcher implements EntryPoint {
 						//pictureListTab.addImageFirst(result.servingUrl);
 						//UIPictureSingle uip = new UIPictureSingle(result.servingUrl);
 						form.reset();
-						//uip.imageblob = result;
-						//uip.image.setUrl(result.getServingUrl());
 					}
 
 				});
@@ -192,182 +247,36 @@ public class StockWatcher implements EntryPoint {
 		});
 
 		//form.add(UploadPanel);
-		RootPanel.get().add(form);
-		
+		myButtonPanel.add(form);
+	
 
-		Button myButton = new Button("Save the image.");
-		myButton.addClickHandler(new ClickHandler() {
-			
+		//Adds button for randomization.
+		Button myRandomButton = new Button("Get another word!");
+		myRandomButton.addClickHandler(new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent event) {
-				String data = myCanvas.toDataUrl("image/png");
-				data = data.replaceFirst("image/png", "image/octet-stream");
-				Window.open(data, "file", null);
-			}
-		});
-		RootPanel.get().add(myButton);
-
-		
-		//final UIPictureList myPL = new UIPictureList(1);
-		
-		//Loading images from the datastore
-				
-		
-		//RootPanel.get().add(myPL.asWidget());
-		
-		
-
-		// We can add style names to widgets
-		sendButton.addStyleName("sendButton");
-
-		// Add the nameField and sendButton to the RootPanel
-		// Use RootPanel.get() to get the entire body element
-//		RootPanel.get("nameFieldContainer").add(nameField);
-//		RootPanel.get("sendButtonContainer").add(sendButton);
-//		RootPanel.get("errorLabelContainer").add(errorLabel);
-
-		// Focus the cursor on the name field when the app loads
-		nameField.setFocus(true);
-		nameField.selectAll();
-
-		// Create the popup dialog box
-		final DialogBox dialogBox = new DialogBox();
-		dialogBox.setText("Remote Procedure Call");
-		dialogBox.setAnimationEnabled(true);
-		final Button closeButton = new Button("Close");
-		// We can set the id of a widget by accessing its Element
-		closeButton.getElement().setId("closeButton");
-		final Label textToServerLabel = new Label();
-		final HTML serverResponseLabel = new HTML();
-		VerticalPanel dialogVPanel = new VerticalPanel();
-		dialogVPanel.addStyleName("dialogVPanel");
-		dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
-		dialogVPanel.add(textToServerLabel);
-		dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-		dialogVPanel.add(serverResponseLabel);
-		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-		dialogVPanel.add(closeButton);
-		dialogBox.setWidget(dialogVPanel);
-
-		// Add a handler to close the DialogBox
-		closeButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				dialogBox.hide();
-				sendButton.setEnabled(true);
-				sendButton.setFocus(true);
+				requestRandom();
 			}
 		});
 
-		// Create a handler for the sendButton and nameField
-//		class MyHandler implements ClickHandler, KeyUpHandler {
-//			/**
-//			 * Fired when the user clicks on the sendButton.
-//			 */
-//			public void onClick(ClickEvent event) {
-//				sendNameToServer();
-//			}
-//
-//			/**
-//			 * Fired when the user types in the nameField.
-//			 */
-//			public void onKeyUp(KeyUpEvent event) {
-//				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-//					sendNameToServer();
-//				}
-//			}
-//
-//			/**
-//			 * Send the name from the nameField to the server and wait for a response.
-//			 */
-//			private void sendNameToServer() {
-//				// First, we validate the input.
-//				errorLabel.setText("");
-//				String textToServer = nameField.getText();
-//				if (!FieldVerifier.isValidName(textToServer)) {
-//					errorLabel.setText(" enter at least four characters");
-//					return;
-//				}
-//
-//				// Then, we send the input to the server.
-//				sendButton.setEnabled(false);
-//				textToServerLabel.setText(textToServer);
-//				serverResponseLabel.setText("");
-//				greetingService.greetServer(textToServer,
-//						new AsyncCallback<String>() {
-//					public void onFailure(Throwable caught) {
-//						// Show the RPC error message to the user
-//						dialogBox
-//						.setText("Remote Procedure Call - Failure");
-//						serverResponseLabel
-//						.addStyleName("serverResponseLabelError");
-//						serverResponseLabel.setHTML(SERVER_ERROR);
-//						dialogBox.center();
-//						closeButton.setFocus(true);
-//					}
-//
-//					public void onSuccess(String result) {
-//						dialogBox.setText("Remote Procedure Call");
-//						serverResponseLabel
-//						.removeStyleName("serverResponseLabelError");
-//						serverResponseLabel.setHTML(result);
-//						dialogBox.center();
-//						closeButton.setFocus(true);
-//					}
-//				});
-//			}
-//		}
-//
-//		// Add a handler to send the name to the server
-//		MyHandler handler = new MyHandler();
-//		sendButton.addClickHandler(handler);
-//		nameField.addKeyUpHandler(handler);
-		
-		greetingService.getRandom(new AsyncCallback<String>() {
-			
-			@Override
-			public void onSuccess(String result) {
-				com.google.gwt.dom.client.Element guessText = Document.get().getElementById("guessWord");
-				guessText.setInnerHTML("<H1>" + result + "</H1>");
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				System.out.println("Rand Failed");
-			}
-		});
-		
-		Button myButtonYay = new Button("Raaandom!");
-		myButtonYay.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				greetingService.getRandom(new AsyncCallback<String>() {
-					
-					@Override
-					public void onSuccess(String result) {
-						System.out.println("The word is..... " + result);
-						com.google.gwt.dom.client.Element guessText = Document.get().getElementById("guessWord");
-						guessText.setInnerHTML("<H1>" + result + "</H1>");
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						System.out.println("Rand Failed");
-					}
-				});
-			}
-		});
-		
-		RootPanel.get().add(myButtonYay);
+		myButtonPanel.add(myRandomButton);
+	
 		
 		
-		RootPanel.get().add(new UIDrawings());
+		/**
+		 * A panel with a gallery of past images.
+		 */
+		UIDrawings myGallery = new UIDrawings();
+		myTLP.add(myGallery,"Galery & Guess");
 		
-		//RootLayoutPanel.get().add(new ScrollPanel(drawPanel));
+		
+		///Other initialization stuff
+		requestRandom();
 		
 	}
 
-
+	
 
 	@UiHandler("uploadButton")
 	void onSubmit(ClickEvent e) {
@@ -383,15 +292,28 @@ public class StockWatcher implements EntryPoint {
 				form.setEncoding(FormPanel.ENCODING_MULTIPART);
 				form.setMethod(FormPanel.METHOD_POST);
 				System.out.println(result + " was successful.");
-				//	uploadButton.setText("Upload");
-				//	uploadButton.setEnabled(true);
-
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
 				System.out.println("Starting Blob session failed =(");
+			}
+		});
+	}
+
+	private void requestRandom() {
+		greetingService.getRandom(new AsyncCallback<String>() {
+
+			@Override
+			public void onSuccess(String result) {
+				System.out.println("The word is..... " + result);
+				com.google.gwt.dom.client.Element guessText = Document.get().getElementById("guessWord");
+				guessText.setInnerHTML("<H2>" + result + "</H2>");
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println("Rand Failed");
 			}
 		});
 	}
@@ -401,7 +323,7 @@ public class StockWatcher implements EntryPoint {
 		int x = 0, y = 0;
 		boolean mouseDown = false;
 		Context2d context1 = myCanvas.getContext2d();
-		
+
 		final int REFRESH_MAX = 4;
 		int count = 0;
 
@@ -441,15 +363,12 @@ public class StockWatcher implements EntryPoint {
 			{
 				context1.lineTo(x, y);
 				context1.lineTo(event.getX(), event.getY());
-				//context1.arc(event.getX(), event.getY(), 5, 0, 360);
-				//context1.fill();
 				context1.stroke();
 				context1.closePath();
 				context1.beginPath();
-				//System.out.println(x + " "+ y);
 				x = event.getX();
 				y = event.getY();
-				
+
 				count++;
 				if (count >= REFRESH_MAX)
 				{
