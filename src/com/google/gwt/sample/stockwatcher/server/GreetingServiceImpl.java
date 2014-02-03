@@ -50,7 +50,8 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public String getRandom() throws IllegalArgumentException {
-		currWord = MyStringUtil.getRandomString();
+		//currWord = MyStringUtil.getRandomString();
+		currWord = wordList[(int) (Math.random()*wordList.length)];
 		return currWord;
 	}
 
@@ -61,4 +62,6 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 		// TODO Auto-generated method stub
 		
 	}
+	
+	String[] wordList = {"Rainbow"};
 }
