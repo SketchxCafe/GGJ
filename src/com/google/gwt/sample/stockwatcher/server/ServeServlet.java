@@ -10,13 +10,14 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 
 public class ServeServlet extends HttpServlet {
-    private BlobstoreService blob= BlobstoreServiceFactory.getBlobstoreService();
+	private static final long serialVersionUID = -1472179363268985366L;
+	private BlobstoreService blob= BlobstoreServiceFactory.getBlobstoreService();
 
 public void doGet(HttpServletRequest req, HttpServletResponse res)
     throws IOException {
 		System.out.println("Serve reached.");
         BlobKey blobKey = new BlobKey(req.getParameter("blobkey"));
-        String imagekey = req.getParameter("imagekey");
+        //String imagekey = req.getParameter("imagekey");
 
         blob.serve(blobKey, res);
     }

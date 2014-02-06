@@ -14,4 +14,10 @@ public interface GreetingService extends RemoteService {
 			throws IllegalArgumentException;
 	
 	void storeWord(String word, String pictureInfo);
+
+	String getUserLoginUrl(String backUrl);
+
+	String getUserNickname();
+
+	PlayerInfo getPlayerInfo(String backUrl);
 }

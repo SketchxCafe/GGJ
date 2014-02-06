@@ -3,7 +3,6 @@ package com.google.gwt.sample.stockwatcher.server;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,7 +22,7 @@ import com.google.gwt.sample.stockwatcher.client.ImageBlob;
 
 @SuppressWarnings("serial")
 public class UploadServlet extends HttpServlet{
-	private static final Logger log = Logger.getLogger(UploadServlet.class.getName());
+	//private static final Logger log = Logger.getLogger(UploadServlet.class.getName());
 
 
 	private BlobstoreService blob = BlobstoreServiceFactory.getBlobstoreService();
@@ -40,6 +39,7 @@ public class UploadServlet extends HttpServlet{
 		}else{
 			System.out.println("The keystring is "+ blobKey.getKeyString());
 			ImagesService imageService = ImagesServiceFactory.getImagesService();
+			@SuppressWarnings("deprecation")
 			String iUrl = imageService.getServingUrl(blobKey);
 			System.out.println("The serving URL is "+ iUrl);
 			Entity imageBlob = new Entity("ImageBlob");

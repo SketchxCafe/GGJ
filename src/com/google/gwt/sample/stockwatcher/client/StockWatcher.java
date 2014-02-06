@@ -62,9 +62,9 @@ public class StockWatcher implements EntryPoint {
 		/**
 		 * High-level panel with tabs.
 		 */
-		TabLayoutPanel myTLP = new TabLayoutPanel(40, Unit.PX);
+		final TabLayoutPanel myTLP = new TabLayoutPanel(40, Unit.PX);
 		RootLayoutPanel.get().add(myTLP);
-		
+
 		/**
 		 * Panel with general information.
 		 */
@@ -80,14 +80,14 @@ public class StockWatcher implements EntryPoint {
 				+ "For uploading picture that you have drawn, you first need to download it to your computer. (It is a feature!)");
 		infoPage.add(wellcomeText);
 		myTLP.add(infoPage, "Start");
-		
+
 		/**
 		 * A panel that contains instruments for drawing and uploading images.
 		 */
 		Panel drawPage = new VerticalPanel();
 		myTLP.add(drawPage, "Make a new drawing");
-		
-		
+
+
 		////Building the Drawing interface
 
 		VerticalPanel drawingPanel = new VerticalPanel();
@@ -107,7 +107,7 @@ public class StockWatcher implements EntryPoint {
 		text.add(top);
 		text.add(word);
 		drawingPanel.add(text);
-		
+
 		//Draw area
 		//VerticalPanel drawAr = new VerticalPanel();
 		//drawAr.getElement().setId("drawingSpace");
@@ -115,17 +115,17 @@ public class StockWatcher implements EntryPoint {
 		myCanvas.setCoordinateSpaceHeight(400);
 		myCanvas.setCoordinateSpaceWidth(375);
 		myCanvas.setPixelSize(375, 400);
-		
+
 		myCanvas.getElement().setId("coolCanvas");
 
 		//drawAr.add(myCanvas);
 		//drawingPanel.add(drawAr);
 		drawingPanel.add(myCanvas);
-		
+
 		//Buttons
 		HTMLPanel pal = new HTMLPanel(
-						"<BODY>"
-						
+				"<BODY>"
+
 						+ "<br>"
 						+ "<input type='image' src='FinnishButton.png' name='image' onclick='finish()'/>"
 						+ "<input type='image' src='B_Pen1px.png' name='image' onclick='penSize(1)'/>"
@@ -150,7 +150,7 @@ public class StockWatcher implements EntryPoint {
 		pal.getElement().setId("palette");
 		drawingPanel.add(pal);
 
-		
+
 		drawPage.add(drawingPanel);
 
 		Context2d context1 = myCanvas.getContext2d();
@@ -172,22 +172,22 @@ public class StockWatcher implements EntryPoint {
 		 */
 		HorizontalPanel myButtonPanel = new HorizontalPanel();
 		drawPage.add(myButtonPanel);
-		
+
 		//Adds button for saving images.
 
-				Button mySaveButton = new Button("Save the image.");
-				mySaveButton.addClickHandler(new ClickHandler() {
+		Button mySaveButton = new Button("Save the image.");
+		mySaveButton.addClickHandler(new ClickHandler() {
 
-					@Override
-					public void onClick(ClickEvent event) {
-						String data = myCanvas.toDataUrl("image/png");
-						data = data.replaceFirst("image/png", "image/octet-stream");
-						Window.open(data, "file", null);
-					}
-				});
-				myButtonPanel.add(mySaveButton);
-		
-		
+			@Override
+			public void onClick(ClickEvent event) {
+				String data = myCanvas.toDataUrl("image/png");
+				data = data.replaceFirst("image/png", "image/octet-stream");
+				Window.open(data, "file", null);
+			}
+		});
+		myButtonPanel.add(mySaveButton);
+
+
 		//Buttons for uploading
 
 		VerticalPanel UploadPanel = new VerticalPanel();
@@ -248,7 +248,7 @@ public class StockWatcher implements EntryPoint {
 
 		//form.add(UploadPanel);
 		myButtonPanel.add(form);
-	
+
 
 		//Adds button for randomization.
 		Button myRandomButton = new Button("Get another word!");
@@ -261,22 +261,109 @@ public class StockWatcher implements EntryPoint {
 		});
 
 		myButtonPanel.add(myRandomButton);
-	
-		
-		
+
+
+
 		/**
 		 * A panel with a gallery of past images.
 		 */
 		UIDrawings myGallery = new UIDrawings();
 		myTLP.add(myGallery,"Galery & Guess");
-		
-		
+
+
 		///Other initialization stuff
 		requestRandom();
-		
+
+		greetingService.getPlayerInfo(Window.Location.getHref(), new AsyncCallback<PlayerInfo>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onSuccess(PlayerInfo result) {
+				if (result!=null){
+					VerticalPanel userPage = new VerticalPanel();
+					Label username = new Label ("Hello, " + result.nickName + "!");
+					userPage.add(username);
+					final String logoutURL = result.logoutURL;
+					Button logoutButton = new Button("Logout");
+					userPage.add(logoutButton);
+					logoutButton.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+							Window.Location.replace(logoutURL);
+						}
+					});
+					myTLP.add(userPage, result.nickName);	
+				}
+				else
+				{
+					VerticalPanel testPanel = new VerticalPanel();
+					Button testButton = new Button("Login");
+					testPanel.add(testButton);
+					myTLP.add(testPanel, "Login");
+
+					testButton.addClickHandler(new ClickHandler() {
+
+						@Override
+						public void onClick(ClickEvent event) {
+							//Window.Location.replace(URL.encode("/login"));
+							//Window.Location.replace(UserServiceFactory.getUserService().createLoginURL(URL.encode("")));
+							greetingService.getUserLoginUrl(Window.Location.getHref(), new AsyncCallback<String>() {
+
+								@Override
+								public void onSuccess(String result) {
+									Window.Location.replace(result);
+
+								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									// TODO Auto-generated method stub	
+								}
+							});
+						}
+					});
+				}
+			}
+		});
+
+
+//		VerticalPanel testPanel = new VerticalPanel();
+//		Button testButton = new Button("Login");
+//		testPanel.add(testButton);
+//		myTLP.add(testPanel, "Test");
+//
+//		testButton.addClickHandler(new ClickHandler() {
+//
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				//Window.Location.replace(URL.encode("/login"));
+//				//Window.Location.replace(UserServiceFactory.getUserService().createLoginURL(URL.encode("")));
+//				greetingService.getUserLoginUrl(Window.Location.getHref(), new AsyncCallback<String>() {
+//
+//					@Override
+//					public void onSuccess(String result) {
+//						Window.Location.replace(result);
+//
+//					}
+//
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						// TODO Auto-generated method stub	
+//					}
+//				});
+//			}
+//		});
+
+
 	}
 
-	
+
 
 	@UiHandler("uploadButton")
 	void onSubmit(ClickEvent e) {

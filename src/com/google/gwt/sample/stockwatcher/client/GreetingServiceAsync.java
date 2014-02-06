@@ -13,4 +13,10 @@ public interface GreetingServiceAsync {
 			throws IllegalArgumentException;
 	
 	void storeWord(String word, String pictureInfo, AsyncCallback<Void> callback);
+	
+	void getUserLoginUrl(String backUrl, AsyncCallback<String> newUrl);
+	
+	void getUserNickname(AsyncCallback<String> nickname);
+	
+	void getPlayerInfo(String backUrl, AsyncCallback<PlayerInfo> user);
 }

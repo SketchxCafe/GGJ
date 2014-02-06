@@ -1,7 +1,10 @@
 package com.google.gwt.sample.stockwatcher.server;
 
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.sample.stockwatcher.client.GreetingService;
-import com.google.gwt.sample.stockwatcher.shared.MyStringUtil;
+import com.google.gwt.sample.stockwatcher.client.PlayerInfo;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -64,4 +67,42 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 	}
 	
 	String[] wordList = {"Rainbow"};
+
+	@Override
+	public String getUserLoginUrl(String backUrl) {
+		UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        if (user==null)
+        {
+        	return userService.createLoginURL(backUrl);
+        }
+		return null;
+	}
+
+	@Override
+	public String getUserNickname() {
+		UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        
+        if (user!=null)
+        {
+        	return user.getNickname();
+        }
+		return null;
+	}
+
+	@Override
+	public PlayerInfo getPlayerInfo(String backUrl) {
+		UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        
+		if (user==null)
+			return null;
+		
+		PlayerInfo toReturn = new PlayerInfo();
+		toReturn.nickName = user.getNickname();
+		toReturn.logoutURL = userService.createLogoutURL(backUrl);
+		
+		return toReturn;
+	}
 }
