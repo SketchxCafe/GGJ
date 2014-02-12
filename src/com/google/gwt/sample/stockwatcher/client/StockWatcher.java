@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -45,7 +46,7 @@ public class StockWatcher implements EntryPoint {
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
-	private final GreetingServiceAsync greetingService = GWT
+	public static final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 
 	FormPanel form = new FormPanel();
@@ -72,6 +73,8 @@ public class StockWatcher implements EntryPoint {
 		HTMLPanel wellcomeText = new HTMLPanel("<H2>Wellcome to Abstractly!</H2>"
 				+ "<br>"
 				+ "Here you can draw abstract stuff."
+				+ "<br>"
+				+ "Added login - supports google login and might show your email!!! Fix is comming."
 				+ "<br>"
 				+ "New features comming up!"
 				+ "<br>"
@@ -274,6 +277,8 @@ public class StockWatcher implements EntryPoint {
 		///Other initialization stuff
 		requestRandom();
 
+		
+		//Player/Login page
 		greetingService.getPlayerInfo(Window.Location.getHref(), new AsyncCallback<PlayerInfo>() {
 
 			@Override
@@ -298,6 +303,27 @@ public class StockWatcher implements EntryPoint {
 							Window.Location.replace(logoutURL);
 						}
 					});
+					
+					//Panel for changing username
+					Panel changeNamePanel = new HorizontalPanel();
+					changeNamePanel.add(new Label("Change Username: "));
+					TextBox myTB = new TextBox();
+					changeNamePanel.add(myTB);
+					Button changeNameButton = new Button("Submit!");
+					changeNameButton.setEnabled(false);
+					//TODO: finish the method.
+//					changeNameButton.addClickHandler(new ClickHandler() {
+//						
+//						@Override
+//						public void onClick(ClickEvent event) {
+//							
+//							
+//						}
+//					});
+					changeNamePanel.add(changeNameButton);
+					
+					userPage.add(changeNamePanel);
+					
 					myTLP.add(userPage, result.nickName);	
 				}
 				else

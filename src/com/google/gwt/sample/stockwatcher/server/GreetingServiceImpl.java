@@ -1,10 +1,18 @@
 package com.google.gwt.sample.stockwatcher.server;
 
+import java.util.Collection;
+
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
+
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.sample.stockwatcher.client.GreetingService;
 import com.google.gwt.sample.stockwatcher.client.PlayerInfo;
+import com.google.gwt.sample.stockwatcher.shared.Player;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -14,6 +22,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GreetingServiceImpl extends RemoteServiceServlet implements
 		GreetingService {
 
+	//private PersistenceManagerFactory pmf;// = JDOHelper.getPersistenceManagerFactory("transactions-optional");
+	
 	public static String currWord = "ERROR!";
 	
 	public String greetServer(String input) throws IllegalArgumentException {
@@ -61,9 +71,14 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 	
 	
 	@Override
-	public void storeWord(String word, String pictureInfo) {
+	public String storeWord(String word, String pictureInfo) {		
 		// TODO Auto-generated method stub
-		
+//		return "recived " + pictureInfo;
+		UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        if (user == null)
+        	return "Please, log in.";
+		return GameOperations.addGuess(pictureInfo, user.getUserId(), word);
 	}
 	
 	String[] wordList = {"Rainbow"};
@@ -98,6 +113,35 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
         
 		if (user==null)
 			return null;
+
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		boolean userExists = false;
+		
+		//Checking whether it is a new user, if not - creating one.
+		//Player currentPlayer = pm.getObjectById(Player.class, user.getUserId());
+		Query myQ = pm.newQuery(Player.class, "id == " + user.getUserId());
+		try{
+			@SuppressWarnings("unchecked")
+			Collection<Player> result = (Collection<Player>) myQ.execute();
+			if (!result.isEmpty())
+				userExists = true;
+		}
+		finally{
+			myQ.closeAll();
+		}
+		
+		if (!userExists)
+		{
+			Player toStore = new Player();
+			toStore.setId(user.getUserId());
+			toStore.setUsername(user.getNickname());
+			
+			try {
+				pm.makePersistent(toStore);
+			} finally{
+				pm.close();
+			}
+		}
 		
 		PlayerInfo toReturn = new PlayerInfo();
 		toReturn.nickName = user.getNickname();

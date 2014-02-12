@@ -4,6 +4,7 @@ package com.google.gwt.sample.stockwatcher.server;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,11 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.sample.stockwatcher.client.ImageBlob;
+import com.google.gwt.sample.stockwatcher.shared.GameImage;
 
 @SuppressWarnings("serial")
 public class UploadServlet extends HttpServlet{
@@ -49,6 +54,23 @@ public class UploadServlet extends HttpServlet{
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			datastore.put(imageBlob);
 
+			//Adding information about the image
+			GameImage toStore = new GameImage();
+			toStore.setKey(blobKey.getKeyString());
+			toStore.setBlobServingUrl(iUrl);
+			//Adding the user ID
+			UserService userService = UserServiceFactory.getUserService();
+	        User user = userService.getCurrentUser();
+			toStore.setPosterID(user.getUserId());
+			//Persisting the additional information
+			PersistenceManager pm = PMF.get().getPersistenceManager();
+			try{
+				pm.makePersistent(toStore);
+			} finally {
+				pm.close();
+			}
+			
+			//Debug and redirect stuff
 			String keyString = KeyFactory.keyToString(imageBlob.getKey());
 			System.out.println("The keyString is "+ iUrl);
 			res.sendRedirect("/upload?uploadedImageKey=" + keyString);  

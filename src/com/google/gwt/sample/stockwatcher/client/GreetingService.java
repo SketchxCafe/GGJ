@@ -13,7 +13,7 @@ public interface GreetingService extends RemoteService {
 	String getRandom()
 			throws IllegalArgumentException;
 	
-	void storeWord(String word, String pictureInfo);
+	String storeWord(String word, String pictureInfo);
 
 	String getUserLoginUrl(String backUrl);
 

@@ -12,7 +12,7 @@ public interface GreetingServiceAsync {
 	void getRandom(AsyncCallback<String> callback)
 			throws IllegalArgumentException;
 	
-	void storeWord(String word, String pictureInfo, AsyncCallback<Void> callback);
+	void storeWord(String word, String pictureInfo, AsyncCallback<String> asyncCallback);
 	
 	void getUserLoginUrl(String backUrl, AsyncCallback<String> newUrl);
 	

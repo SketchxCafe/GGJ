@@ -9,17 +9,20 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class UIDrawings extends VerticalPanel{
+public class UIDrawings extends ScrollPanel{
 
-	private static UIDrawings instance = null;
+	//private static UIDrawings instance = null;
+	private static VerticalPanel instance = null;
 	
 	public UIDrawings(){
 		super();
-		instance = this;
-		this.add(new Label("Hallo! I take some time to load.."));
+		instance = new VerticalPanel();
+		this.add(instance);
+		instance.add(new Label("Hallo! I take some time to load.."));
 
 
 		StockWatcher.imageService.getRecentlyUploaded(new AsyncCallback<LinkedList<ImageBlob>>(){
@@ -48,6 +51,7 @@ public class UIDrawings extends VerticalPanel{
 						//Label myLabel = new Label(current.getWord());
 						//RootPanel.get().add(myLabel);
 						//a.fp.add(myLabel);
+						a.blobKey = current.getKey();
 						a.addStuff();
 						//a.fp.setWidth("500px");
 						if (UIDrawings.instance!=null)
@@ -63,6 +67,7 @@ public class UIDrawings extends VerticalPanel{
 		String [] options;
 		VerticalPanel fp;
 		int correctNum = (int) (Math.random()*5);
+		String blobKey;
 
 		UIDraw(String correct){
 			fp = new VerticalPanel();
@@ -87,10 +92,26 @@ public class UIDrawings extends VerticalPanel{
 
 				@Override
 				public void onClick(ClickEvent event) {
-					if (MyStringUtil.checkForRightString(options[correctNum], myTA.getText()))
-						blah.setText("Check: Right!");
-					else
-						blah.setText("Check: False");
+					com.google.gwt.user.client.Window.alert("requesting " + blobKey);
+					StockWatcher.greetingService.storeWord(myTA.getText(), blobKey, new AsyncCallback<String>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							com.google.gwt.user.client.Window.alert("Ops, send had failed." + caught.getStackTrace());
+						}
+
+						@Override
+						public void onSuccess(String result) {
+							//((Button) (event.getSource())).setText(result);
+							com.google.gwt.user.client.Window.alert(result);
+						}
+					});
+					
+//					if (MyStringUtil.checkForRightString(options[correctNum], myTA.getText()))
+//						blah.setText("Check: Right!");
+//					else
+//						blah.setText("Check: False");
 				}
 			});
 			
