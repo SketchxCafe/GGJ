@@ -22,6 +22,9 @@ public class Player implements Serializable{
 	@Persistent
 	String username = "noname";
 
+	//No need to store.
+	public String logoutURL;
+	
 	public String getId() {
 		return id;
 	}

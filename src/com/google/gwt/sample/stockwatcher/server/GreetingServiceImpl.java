@@ -1,17 +1,16 @@
 package com.google.gwt.sample.stockwatcher.server;
 
-import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
-import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.sample.stockwatcher.client.GreetingService;
-import com.google.gwt.sample.stockwatcher.client.PlayerInfo;
+import com.google.gwt.sample.stockwatcher.shared.GameImage;
 import com.google.gwt.sample.stockwatcher.shared.Player;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -105,9 +104,28 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
         }
 		return null;
 	}
-
+	
 	@Override
-	public PlayerInfo getPlayerInfo(String backUrl) {
+	public void setUserNickname(String nickName) {
+		UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        
+        if (user!=null)
+        {
+        	PersistenceManager pm = PMF.get().getPersistenceManager();
+        	try{
+        		Player current = pm.getObjectById(Player.class, user.getUserId());
+        		current.setUsername(nickName);
+        	}
+        	finally{
+        		pm.close();
+        	}
+        }
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Player getPlayer(String backUrl) {
 		UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
         
@@ -116,23 +134,25 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		boolean userExists = false;
+		List<Player> result = null;
 		
 		//Checking whether it is a new user, if not - creating one.
 		//Player currentPlayer = pm.getObjectById(Player.class, user.getUserId());
-		Query myQ = pm.newQuery(Player.class, "id == " + user.getUserId());
+		Query myQ = pm.newQuery(Player.class, "id == '" + user.getUserId() + "'");
 		try{
-			@SuppressWarnings("unchecked")
-			Collection<Player> result = (Collection<Player>) myQ.execute();
-			if (!result.isEmpty())
+			result = (List<Player>) myQ.execute();
+			if (!(result.isEmpty()))
 				userExists = true;
 		}
 		finally{
 			myQ.closeAll();
 		}
 		
+		Player toStore = userExists ? result.get(0) : null;
+		
 		if (!userExists)
 		{
-			Player toStore = new Player();
+			toStore = new Player();
 			toStore.setId(user.getUserId());
 			toStore.setUsername(user.getNickname());
 			
@@ -143,10 +163,62 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 			}
 		}
 		
-		PlayerInfo toReturn = new PlayerInfo();
-		toReturn.nickName = user.getNickname();
-		toReturn.logoutURL = userService.createLogoutURL(backUrl);
+		//Removing the ID due to security reasons
+		Player toSend = new Player();
+		toSend.id = "";
+		toSend.setUsername(toStore.getUsername());
+		toSend.score = toStore.score;
+		toSend.logoutURL = userService.createLoginURL(backUrl);
 		
+		return toSend;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Player> getPlayerRankings() {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query myQ = pm.newQuery(Player.class);
+		myQ.setFilter("score > 0");
+		myQ.setOrdering("score desc");
+		
+		List<Player> qResult = null;
+		try{
+			qResult = (List<Player>) myQ.execute();
+		}
+		finally{
+			myQ.closeAll();
+		}
+		
+		if (qResult != null)
+		{
+			List<Player> trimmedList = new LinkedList<Player>();
+			for (Player current : qResult)
+			{
+				Player newPlayer = new Player();
+				newPlayer.setUsername(current.getUsername());
+				newPlayer.score = current.score;
+				trimmedList.add(newPlayer);
+			}
+			qResult = trimmedList;
+		}
+		return qResult;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<GameImage> getImageInfos(){
+		List<GameImage> toReturn = null;
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query myQ = pm.newQuery(GameImage.class);
+		myQ.setOrdering("time desc");
+		try{
+			toReturn = (List<GameImage>) myQ.execute();
+		}
+		finally{
+			myQ.closeAll();
+		}
+		//TODO: Trim the right answers!
+		//Due to the problems with serialization, need to create another List 
+		toReturn = new LinkedList<GameImage>(toReturn);
 		return toReturn;
 	}
 }

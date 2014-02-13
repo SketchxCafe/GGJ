@@ -1,11 +1,7 @@
 package com.google.gwt.sample.stockwatcher.server;
 
-import java.util.List;
-
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 
-import com.google.gwt.sample.stockwatcher.client.ImageBlob;
 import com.google.gwt.sample.stockwatcher.shared.GameImage;
 import com.google.gwt.sample.stockwatcher.shared.MyStringUtil;
 import com.google.gwt.sample.stockwatcher.shared.Player;
@@ -15,6 +11,9 @@ public class GameOperations {
 	
 	public static void incrementUserScore(String userID, int howMuch)
 	{
+		if (howMuch == 0)
+			return;
+		
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		
 		try{
@@ -26,16 +25,16 @@ public class GameOperations {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+
 	public static String addGuess(String gameImageKey, String playerID, String guess){
 		//Checking whether the answer is right
-		imageDAO myImageDAO = new imageDAO();
-		ImageBlob temp = myImageDAO.get(gameImageKey);
+		//imageDAO myImageDAO = new imageDAO();
+		//ImageBlob temp = myImageDAO.get(gameImageKey);
 		
-		if (temp == null)
-			return "Blob not found. Notify admin.";
+		//if (temp == null)
+		//	return "Blob not found. Notify admin.";
 		
-		boolean guessResult = MyStringUtil.checkForRightString(temp.getWord(), guess);
+		boolean guessResult = false;// = MyStringUtil.checkForRightString(temp.getWord(), guess);
 		
 		//Updating the image information.
 		int count = -1;
@@ -43,48 +42,56 @@ public class GameOperations {
 		String [] tempo = null;
 		boolean [] tempu = null;
 		String host = null;
-		int nElements = 0;
+		String correctAnswer = "";
+		
+		boolean objectChanged = false;
 		
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try {
 			//GameImage currentImage = pm.getObjectById(GameImage.class, gameImageKey);
 			
-			List<GameImage> result;
+			GameImage result;
 			
 			//String request = "key == '" + gameImageKey + "'";
 				//"key.equals('"+ gameImageKey +"')";
 			//Query myQ = pm.newQuery(GameImage.class, request);
-			Query myQ = pm.newQuery(GameImage.class);
-			myQ.setFilter("key == param");
-			myQ.declareParameters("String param");
-			try{
-				result = (List<GameImage>) myQ.execute(gameImageKey);
-				nElements = result.size();
-			}
-			finally{
-				myQ.closeAll();
-			}
+			//Query myQ = pm.newQuery(GameImage.class);
+//			myQ.setFilter("key == param");
+//			myQ.declareParameters("String param");
+//			try{
+//				result = (List<GameImage>) myQ.execute(gameImageKey);
+//				nElements = result.size();
+//			}
+//			finally{
+//				myQ.closeAll();
+//			}
+			
+			result = pm.getObjectById(GameImage.class, Long.decode(gameImageKey));
 			
 			//TODO: allows multiple guesses!
-			if (!result.isEmpty())
+			if (!(result==null))
 			{
-				GameImage currentImage = result.get(0);
+				GameImage currentImage = result;
 				count = currentImage.getGuessed();
+				correctAnswer = currentImage.getWord();
+				guessResult = MyStringUtil.checkForRightString(correctAnswer, guess);
 				if (count < 5)
 				{
 					count++;
 					
 					pm.currentTransaction().begin();
 					currentImage.setGuessed(count);
-					tempo = currentImage.getGuessers();
 					currentImage.setNextGuesser(playerID);
 					tempu = currentImage.getGuessedRight();
+					
 					tempu[count-1] = guessResult;
-					currentImage.setGuessedRight(tempu);
+					currentImage.setGuessedRight(tempu);				
+					tempo = currentImage.getGuessers();
 					//TODO: potential optimization
 					host = currentImage.getPosterID();
-					
 					pm.currentTransaction().commit();
+					
+					objectChanged = true;
 				}
 			}
 			else
@@ -101,12 +108,14 @@ public class GameOperations {
 //		if (host.equals(playerID))
 //			return "Cannot guess on your art.";
 		
-		if (tempo==null || count >=5)
+		if (!objectChanged && (tempo==null || count >=5))
 			//return "No more votes required.";
-			return "No more votes required; " + nElements + " found.";
+			return "No more votes required.\n" + ((guessResult) ? 
+					"Right! It is "+ correctAnswer + "." 
+					: "Wrong!");
 			
 		//Check for giving out the points
-		if (count == 5 && tempo!=null && tempu!=null)
+		if (objectChanged && count == 5 && tempo!=null && tempu!=null)
 		{
 			int rightCount = 0;
 			for (int i = 0; i<5; i++)
@@ -115,9 +124,7 @@ public class GameOperations {
 			
 			if (rightCount == 0 || rightCount == 5)
 			{
-				//Nobody got it right or everybody got it right
-				//Give 0 to the host
-				//incrementUserScore(host, 0);
+				//Nobody got it right or everybody got it right - give 0 to host
 				
 				//Give 1 to each player
 				for (int i = 0; i<5; i++)
@@ -128,7 +135,9 @@ public class GameOperations {
 			else 
 			{
 				//Give some to the host
-				incrementUserScore(host, 3 - Math.abs(rightCount - 3));
+				int [] score = {0, 2, 3, 2, 1, 0};
+				
+				incrementUserScore(host, score[rightCount]);
 				
 				for (int i = 0; i<5; i++)
 				{
@@ -137,8 +146,8 @@ public class GameOperations {
 						incrementUserScore(tempo[i], 1);
 				}
 			}
-			return "The last user: point assigned.";
+			return "It was the last guess: points assigned!";
 		}
-		return "The " + count + " guess added.";
+		return "The guess #" + count + " added.";
 	}
 }

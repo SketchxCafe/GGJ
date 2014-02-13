@@ -1,9 +1,10 @@
 package com.google.gwt.sample.stockwatcher.client;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.sample.stockwatcher.shared.GameImage;
 import com.google.gwt.sample.stockwatcher.shared.MyStringUtil;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -25,21 +26,22 @@ public class UIDrawings extends ScrollPanel{
 		instance.add(new Label("Hallo! I take some time to load.."));
 
 
-		StockWatcher.imageService.getRecentlyUploaded(new AsyncCallback<LinkedList<ImageBlob>>(){
-			@Override
+		//StockWatcher.imageService.getRecentlyUploaded(new AsyncCallback<LinkedList<ImageBlob>>(){
+		StockWatcher.greetingService.getImageInfos(new AsyncCallback<List<GameImage>>() {
+		@Override
 			public void onFailure(Throwable caught) {
 				System.out.println("Loading old pictures failed.");
 				com.google.gwt.user.client.Window.alert("Loading old pictures failed.");
 			}
 
 			@Override
-			public void onSuccess(LinkedList<ImageBlob> result) {
+			public void onSuccess(List<GameImage> result) {
 				System.out.println("Yay! S. from RU.");
-				for (ImageBlob current: result)
+				for (GameImage current: result)
 				{
 					//FlowPanel myFP = new FlowPanel();
 
-					com.google.gwt.user.client.ui.Image myImage = new com.google.gwt.user.client.ui.Image(current.servingUrl);
+					com.google.gwt.user.client.ui.Image myImage = new com.google.gwt.user.client.ui.Image(current.getBlobServingUrl());
 					//myImage.setSize("100%", "100%");
 					//RootPanel.get().add(myImage);
 					//myFP.add(myImage);
@@ -51,7 +53,10 @@ public class UIDrawings extends ScrollPanel{
 						//Label myLabel = new Label(current.getWord());
 						//RootPanel.get().add(myLabel);
 						//a.fp.add(myLabel);
-						a.blobKey = current.getKey();
+						//a.blobKey = current.getId();//current.getKey();
+						//a.wrappedGameImage = current;
+						a.imageID = current.getId();
+						a.guesses = current.getGuessed();
 						a.addStuff();
 						//a.fp.setWidth("500px");
 						if (UIDrawings.instance!=null)
@@ -67,7 +72,10 @@ public class UIDrawings extends ScrollPanel{
 		String [] options;
 		VerticalPanel fp;
 		int correctNum = (int) (Math.random()*5);
-		String blobKey;
+		//String blobKey;
+		Long imageID;
+		int guesses = 0;
+		//GameImage wrappedGameImage = null;
 
 		UIDraw(String correct){
 			fp = new VerticalPanel();
@@ -92,12 +100,11 @@ public class UIDrawings extends ScrollPanel{
 
 				@Override
 				public void onClick(ClickEvent event) {
-					com.google.gwt.user.client.Window.alert("requesting " + blobKey);
-					StockWatcher.greetingService.storeWord(myTA.getText(), blobKey, new AsyncCallback<String>() {
+					com.google.gwt.user.client.Window.alert("requesting " + imageID);
+					StockWatcher.greetingService.storeWord(myTA.getText(), ""+imageID, new AsyncCallback<String>() {
 
 						@Override
 						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
 							com.google.gwt.user.client.Window.alert("Ops, send had failed." + caught.getStackTrace());
 						}
 
@@ -116,6 +123,7 @@ public class UIDrawings extends ScrollPanel{
 			});
 			
 			HorizontalPanel buttonsPanel = new HorizontalPanel();
+			buttonsPanel.add(new Label("" + guesses));
 			buttonsPanel.add(myTA);
 			buttonsPanel.add(blah);
 			fp.add(buttonsPanel);

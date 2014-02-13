@@ -1,5 +1,9 @@
 package com.google.gwt.sample.stockwatcher.client;
 
+import java.util.List;
+
+import com.google.gwt.sample.stockwatcher.shared.GameImage;
+import com.google.gwt.sample.stockwatcher.shared.Player;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -18,6 +22,12 @@ public interface GreetingService extends RemoteService {
 	String getUserLoginUrl(String backUrl);
 
 	String getUserNickname();
+	
+	void setUserNickname(String newNickname);
 
-	PlayerInfo getPlayerInfo(String backUrl);
+	Player getPlayer(String backUrl);
+	
+	List<Player> getPlayerRankings();
+	
+	List<GameImage> getImageInfos();
 }

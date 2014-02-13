@@ -1,5 +1,9 @@
 package com.google.gwt.sample.stockwatcher.client;
 
+import java.util.List;
+
+import com.google.gwt.sample.stockwatcher.shared.GameImage;
+import com.google.gwt.sample.stockwatcher.shared.Player;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -18,5 +22,12 @@ public interface GreetingServiceAsync {
 	
 	void getUserNickname(AsyncCallback<String> nickname);
 	
-	void getPlayerInfo(String backUrl, AsyncCallback<PlayerInfo> user);
+	void setUserNickname(String newNickname, AsyncCallback<Void> callback);
+	
+	void getPlayer(String backUrl, AsyncCallback<Player> user);
+
+	void getPlayerRankings(AsyncCallback<List<Player>> callback);
+	
+	void getImageInfos(AsyncCallback<List<GameImage>> callback);
+
 }

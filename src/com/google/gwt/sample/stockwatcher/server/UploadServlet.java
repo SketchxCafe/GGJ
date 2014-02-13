@@ -50,7 +50,8 @@ public class UploadServlet extends HttpServlet{
 			Entity imageBlob = new Entity("ImageBlob");
 			imageBlob.setProperty("blobKey", blobKey);
 			imageBlob.setProperty(ImageBlob.SERVING_URL, iUrl);
-			imageBlob.setProperty(ImageBlob.WORD, GreetingServiceImpl.currWord);
+			//imageBlob.setProperty(ImageBlob.WORD, GreetingServiceImpl.currWord);
+			imageBlob.setProperty(ImageBlob.WORD, (String) req.getParameter("wordSend"));
 			DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 			datastore.put(imageBlob);
 
@@ -58,10 +59,15 @@ public class UploadServlet extends HttpServlet{
 			GameImage toStore = new GameImage();
 			toStore.setKey(blobKey.getKeyString());
 			toStore.setBlobServingUrl(iUrl);
+			//toStore.setWord(GreetingServiceImpl.currWord);
+			toStore.setWord((String) req.getParameter("wordSend"));
+			toStore.setTime(System.currentTimeMillis());
 			//Adding the user ID
 			UserService userService = UserServiceFactory.getUserService();
+			//TODO: Breaks for unregistred users
 	        User user = userService.getCurrentUser();
-			toStore.setPosterID(user.getUserId());
+			if (user!=null)
+				toStore.setPosterID(user.getUserId());
 			//Persisting the additional information
 			PersistenceManager pm = PMF.get().getPersistenceManager();
 			try{

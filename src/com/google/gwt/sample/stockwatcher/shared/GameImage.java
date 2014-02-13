@@ -1,16 +1,31 @@
 package com.google.gwt.sample.stockwatcher.shared;
 
+import java.io.Serializable;
+
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 @PersistenceCapable(detachable="true")
-public class GameImage {
+public class GameImage implements Serializable{
 	
+	private static final long serialVersionUID = -9168641132749193471L;
+
 	public static final int MAX_GUESS = 5;
 
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Long id;
+	
+	@Persistent
+	Long time;
+	
 	@Persistent
 	String imageBlobKey;
+	
+	@Persistent
+	String word;
 	
 	@Persistent
 	String blobServingUrl;
@@ -39,7 +54,26 @@ public class GameImage {
 	
 	@Persistent
 	int guessed = 0; 
+
+	public GameImage(){
+	}
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getTime() {
+		return time;
+	}
+
+	public void setTime(Long time) {
+		this.time = time;
+	}
+
 	public String getImageBlobKey() {
 		return imageBlobKey;
 	}
@@ -118,5 +152,13 @@ public class GameImage {
 
 	public void setGuessed(int guessed) {
 		this.guessed = guessed;
+	}
+
+	public String getWord() {
+		return word;
+	}
+
+	public void setWord(String word) {
+		this.word = word;
 	}
 }

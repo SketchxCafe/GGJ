@@ -1,6 +1,8 @@
 package com.google.gwt.sample.stockwatcher.client;
 
 
+import java.util.List;
+
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
@@ -21,6 +23,7 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.sample.stockwatcher.shared.Player;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -53,6 +56,7 @@ public class StockWatcher implements EntryPoint {
 	final Canvas myCanvas = Canvas.createIfSupported();
 	DrawListener myMouseHandler = new DrawListener();
 	public static final ImageServiceAsync imageService = GWT.create(ImageService.class);
+	String currentWord = "";
 
 
 	/**
@@ -74,11 +78,22 @@ public class StockWatcher implements EntryPoint {
 				+ "<br>"
 				+ "Here you can draw abstract stuff."
 				+ "<br>"
-				+ "Added login - supports google login and might show your email!!! Fix is comming."
+				+ "Draw so that only some people guess right and guess on others' drawings to get points!"
+				+ "<br>"
+				+ "If you guess right, you get 1 point. If none people guessed right (including you), you get a point."
+				+ "<br>"
+				+ "There are 5 guessers per picture; points are distrubued after the 5th guesser."
+				+ "<br>"
+				+ "The drawer gets points if 1,2,3 or 4 guessers out of 5 guessed correctly (2,3,2,1 points respectively)."
+				+ "<br>"
+				+ "<br>"
+				+ "Added login - supports google login and might use your email as nickname! You can change the nickname at your tab."
 				+ "<br>"
 				+ "New features comming up!"
 				+ "<br>"
 				+ "Currently, only Crome is supported."
+				+ "<br>"
+				+ "One guess = many words, separated by whitespaces."
 				+ "<br>"
 				+ "For uploading picture that you have drawn, you first need to download it to your computer. (It is a feature!)");
 		infoPage.add(wellcomeText);
@@ -201,8 +216,14 @@ public class StockWatcher implements EntryPoint {
 		lblUploadACute.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		UploadPanel.add(lblUploadACute);
 
+		final TextBox hiddenWord = new TextBox();
+		hiddenWord.setVisible(false);
+		hiddenWord.setName("wordSend");
+		UploadPanel.add(hiddenWord);
+		
 		final FileUpload fileUpload = new FileUpload();
 		fileUpload.setName("fileUpload");
+		fileUpload.setEnabled(false);
 		UploadPanel.add(fileUpload);
 		form = new FormPanel();
 		form.setWidget(UploadPanel);
@@ -212,13 +233,13 @@ public class StockWatcher implements EntryPoint {
 			@Override
 			public void onChange(ChangeEvent event) {
 				System.out.println(fileUpload.getFilename());
+				hiddenWord.setText(currentWord);
 				com.google.gwt.user.client.Window.alert(("Yay! You chose a file! Magic-magic-magic!!!!\n"+
 						fileUpload.getFilename()));
 
 				System.out.println("2Data url: " + myCanvas.toDataUrl("image/png"));
 				form.submit();
-
-
+				//event.cancel
 			}});
 		form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 			public void onSubmitComplete(SubmitCompleteEvent event){
@@ -240,8 +261,6 @@ public class StockWatcher implements EntryPoint {
 						System.out.println(result==null);
 						System.out.println("new " + result.servingUrl + ", yay!!!");
 						com.google.gwt.user.client.Window.alert("new " + result.servingUrl + ", yay!!!");
-						//pictureListTab.addImageFirst(result.servingUrl);
-						//UIPictureSingle uip = new UIPictureSingle(result.servingUrl);
 						form.reset();
 					}
 
@@ -279,7 +298,7 @@ public class StockWatcher implements EntryPoint {
 
 		
 		//Player/Login page
-		greetingService.getPlayerInfo(Window.Location.getHref(), new AsyncCallback<PlayerInfo>() {
+		greetingService.getPlayer(Window.Location.getHref(), new AsyncCallback<Player>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -288,10 +307,12 @@ public class StockWatcher implements EntryPoint {
 			}
 
 			@Override
-			public void onSuccess(PlayerInfo result) {
+			public void onSuccess(Player result) {
+				fileUpload.setEnabled(true);
+				
 				if (result!=null){
 					VerticalPanel userPage = new VerticalPanel();
-					Label username = new Label ("Hello, " + result.nickName + "!");
+					Label username = new Label ("Hello, " + result.getUsername() + "!");
 					userPage.add(username);
 					final String logoutURL = result.logoutURL;
 					Button logoutButton = new Button("Logout");
@@ -307,24 +328,35 @@ public class StockWatcher implements EntryPoint {
 					//Panel for changing username
 					Panel changeNamePanel = new HorizontalPanel();
 					changeNamePanel.add(new Label("Change Username: "));
-					TextBox myTB = new TextBox();
+					final TextBox myTB = new TextBox();
 					changeNamePanel.add(myTB);
 					Button changeNameButton = new Button("Submit!");
-					changeNameButton.setEnabled(false);
-					//TODO: finish the method.
-//					changeNameButton.addClickHandler(new ClickHandler() {
-//						
-//						@Override
-//						public void onClick(ClickEvent event) {
-//							
-//							
-//						}
-//					});
+					
+					changeNameButton.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							greetingService.setUserNickname(myTB.getText(), new AsyncCallback<Void>() {
+								public void onSuccess(Void nothing)
+								{
+									com.google.gwt.user.client.Window.alert("Now you are " +myTB.getText() +"!");
+								}
+								
+								public void onFailure(Throwable caught)
+								{
+									com.google.gwt.user.client.Window.alert("Somthing bad happened during the process.");
+								}
+							});
+							
+						}
+					});
 					changeNamePanel.add(changeNameButton);
+					
+					userPage.add(new Label("Your score: " + result.getScore()));
 					
 					userPage.add(changeNamePanel);
 					
-					myTLP.add(userPage, result.nickName);	
+					myTLP.add(userPage, result.getUsername());	
 				}
 				else
 				{
@@ -359,6 +391,23 @@ public class StockWatcher implements EntryPoint {
 		});
 
 
+		//Rankings Page
+		
+		greetingService.getPlayerRankings(new AsyncCallback<List<Player>>() {
+			
+			@Override
+			public void onSuccess(List<Player> result) {
+				VerticalPanel basicList = new VerticalPanel();
+				for (Player current : result)
+					basicList.add(new Label(current.getUsername() +"   -   " + current.getScore()));
+				myTLP.add(basicList, "Player Rankings");
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+		});
+		
 //		VerticalPanel testPanel = new VerticalPanel();
 //		Button testButton = new Button("Login");
 //		testPanel.add(testButton);
@@ -422,6 +471,7 @@ public class StockWatcher implements EntryPoint {
 				System.out.println("The word is..... " + result);
 				com.google.gwt.dom.client.Element guessText = Document.get().getElementById("guessWord");
 				guessText.setInnerHTML("<H2>" + result + "</H2>");
+				currentWord = result;
 			}
 
 			@Override
